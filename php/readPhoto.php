@@ -1,5 +1,7 @@
 <?php
-readPhoto("../images/photos/1.jpg");
+/**
+    Pass the soruce of a photo into the the function and it will return the important EXIF values back
+*/
 function readPhoto($src) {
 	$exif = exif_read_data($src, "EXIF");
     echo "FileName : " . $exif['FileName']. "<br />";
