@@ -17,7 +17,7 @@
 		,"../images/photos/3.jpg");
 	make_thumb($arrayOfImages);
 */
-function make_thumb($srcArray) {
+function makeThumb($srcArray) {
 	
 	$dest = "../images/thumbnails/"; //Change this if you want the destiation to be different. /
 	$desired_height = 512;
