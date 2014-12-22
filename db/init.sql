@@ -1,0 +1,29 @@
+CREATE TABLE album (
+	albumID INT AUTO_INCREMENT NOT NULL
+	,albumName VARCHAR(250) NOT NULL
+	,albumDate DATE NOT NULL
+	,albumTag VARCHAR(1000)
+	,privateLink VARCHAR(255)
+	,CONSTRAINT pk_AlbumID PRIMARY KEY (albumID)
+);
+
+CREATE TABLE photo (
+	photoID INT AUTO_INCREMENT NOT NULL
+	,photoName VARCHAR(250) NULL
+	,photoDate DATE NOT NULL
+	,aperture DECIMAL(4,2) NULL
+	,ISO VARCHAR(15) NULL
+	,focalLength INT NULL
+	,camera VARCHAR(50) NULL
+	,description BLOB NULL
+	,location VARCHAR(50) NULL
+	,CONSTRAINT pk_photoID PRIMARY KEY (photoID)
+);
+
+CREATE TABLE photoAlbum (
+	photoID INT NOT NULL
+	,albumID INT NOT NULL
+	,CONSTRAINT PK_photoID PRIMARY KEY (photoID)
+	,CONSTRAINT FK_photoID FOREIGN KEY (photoID) REFERENCES photo(photoID)
+	,CONSTRAINT FK_albumID FOREIGN KEY (albumID) REFERENCES album(albumID)
+);
