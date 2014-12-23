@@ -113,6 +113,9 @@ function processImages($arrayOfImages) {
         if (!mysqli_query($conn, $query)) {
             echo "Error: " . $query . "<br>" . mysqli_error($conn);
         } 
+        /*
+            Update the progress bar
+        */
         $percent = ++$count / $sizeOfArray;
         echo '<script language="javascript">
             document.getElementById("progress").value = '.$percent.';
@@ -121,6 +124,9 @@ function processImages($arrayOfImages) {
         echo str_repeat(' ',1024*64);
         flush();
     }
+    /*
+        Say that we are done!
+    */
     echo '<script language="javascript">document.getElementById("information").innerHTML = "Process completed<br />" 
         + document.getElementById("information").innerHTML</script>';
     if($return) {
