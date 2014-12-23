@@ -1,55 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html lang="en">
-<head>
-    <title>Progress Bar</title>
-<style>
-    progress {
-        width: 400px;
-        height: 14px;
-        margin: 50px auto;
-        display: block;
-        /* Important Thing */
-        -webkit-appearance: none;
-        border: none;
-    }
-
-    progress::-webkit-progress-bar {
-        background: black;
-        border-radius: 50px;
-        padding: 2px;
-        box-shadow: 0 1px 0px 0 rgba(255, 255, 255, 0.2);
-    }
-
-    progress::-webkit-progress-value {
-        border-radius: 50px;
-        box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
-        background:
-            -webkit-linear-gradient(45deg, transparent, transparent 33%, rgba(0, 0, 0, 0.1) 33%, rgba(0, 0, 0, 0.1) 66%, transparent 66%),
-            -webkit-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.2)),
-            -webkit-linear-gradient(left, #ba7448, #c4672d);
-        
-        background-size: 25px 14px, 100% 100%, 100% 100%;
-        -webkit-animation: move 5s linear 0 infinite;
-    }
-
-    @-webkit-keyframes move {
-        0% {background-position: 0px 0px, 0 0, 0 0}
-        100% {background-position: -100px 0px, 0 0, 0 0}
-    }
-    }
-</style>
-</head>
-<body>
-<!-- Progress bar holder -->
-<progress id = "progress" value="0">
-</progress>
-<h1>Warnings</h1>
-<div id = "warnings"></div>
-<h1>Status</h1>
-<div id="information" style="width"></div>
-</body>
-</html>
-
 <?php
 require 'connection.php';
 /**
@@ -69,8 +17,6 @@ require 'connection.php';
 function processImages($arrayOfImages) {
     $return = true;
     $failedFiles = array();
-    $count = 0;
-    $sizeOfArray =  sizeof($arrayOfImages);
     //Connect to the database!
     global $conn;
     if (!$conn) {
@@ -79,11 +25,9 @@ function processImages($arrayOfImages) {
     //Make thumbnails for each photo, then rip the EXIF data and insert it into the database
     foreach($arrayOfImages as $image) {
         if(makeThumb($image) !== true) {
-            echo '<script>document.getElementById("warnings").innerHTML = "Failed to proccess'. $image . '" 
-                + document.getElementById("warnings").innerHTML</script>';
+            echo "Failed to proccess $image <br />";
             $return = false;
             array_push($failedFiles, $image);
-            $sizeOfArray--;
             continue;
         }
         /*
@@ -113,16 +57,8 @@ function processImages($arrayOfImages) {
         if (!mysqli_query($conn, $query)) {
             echo "Error: " . $query . "<br>" . mysqli_error($conn);
         } 
-        $percent = ++$count / $sizeOfArray;
-        echo '<script language="javascript">
-            document.getElementById("progress").value = '.$percent.';
-            document.getElementById("information").innerHTML="'.$image.' processed.<br />" + document.getElementById("information").innerHTML;
-            </script>';
-        echo str_repeat(' ',1024*64);
-        flush();
     }
-    echo '<script language="javascript">document.getElementById("information").innerHTML = "Process completed<br />" 
-        + document.getElementById("information").innerHTML</script>';
+    echo "Done";
     if($return) {
         return $return;
     }
@@ -233,4 +169,3 @@ function readPhoto($src) {
     return $return;
 }
 ?>
-
