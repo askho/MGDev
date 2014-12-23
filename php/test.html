@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<body>
+
+<h1>Getting server updates</h1>
+<div id="result"></div>
+
+<script>
+
+$( document ).ready(function() {
+   for (i = 0; i < 130; i++) { 
+   	var append = ",\"../images/photos/" + i +".jpg\"<br />";
+    $("#result").append(append)
+}
+});
+</script>
+
+</body>
+</html>
