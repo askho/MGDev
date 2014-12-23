@@ -11,12 +11,14 @@ CREATE TABLE photo (
 	photoID INT AUTO_INCREMENT NOT NULL
 	,photoName VARCHAR(250) NULL
 	,photoDate DATE NOT NULL
-	,aperture DECIMAL(4,2) NULL
+	,dateTaken date NULL
+	,aperture VARCHAR(10) NULL
 	,ISO VARCHAR(15) NULL
 	,focalLength INT NULL
 	,camera VARCHAR(50) NULL
 	,description BLOB NULL
 	,location VARCHAR(50) NULL
+	,originalFileName VARCHAR(100) NULL
 	,CONSTRAINT pk_photoID PRIMARY KEY (photoID)
 );
 
@@ -24,6 +26,6 @@ CREATE TABLE photoAlbum (
 	photoID INT NOT NULL
 	,albumID INT NOT NULL
 	,CONSTRAINT PK_photoID PRIMARY KEY (photoID)
-	,CONSTRAINT FK_photoID FOREIGN KEY (photoID) REFERENCES photo(photoID)
-	,CONSTRAINT FK_albumID FOREIGN KEY (albumID) REFERENCES album(albumID)
+	,CONSTRAINT FK_photoID FOREIGN KEY (photoID) REFERENCES photo(photoID) ON DELETE CASCADE
+	,CONSTRAINT FK_albumID FOREIGN KEY (albumID) REFERENCES album(albumID) ON DELETE CASCADE
 );
