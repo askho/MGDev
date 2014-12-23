@@ -7,8 +7,9 @@
 
         <!-- 2 -->
         <script src="dropzone.min.js"></script>>
-        <script>Dropzone.options.myAwesomeDropzone = {
-    maxFiles: 1,
+        <script>Dropzone.options.testzone = {
+    maxFiles: 50,
+    maxFilesize: 25,
     accept: function(file, done) {
         console.log("uploaded");
         done("");
@@ -23,19 +24,7 @@
     </head>
 
     <body>
-        <form action="upload.php" class="dropzone"></form>
-        <script>
-            window.Dropzone.options = {
-                paramName: "file", // The name that will be used to transfer the file
-                maxFilesize: 2, // MB
-                accept: function(file, done) {
-                    if (file.name != "justinbieber.jpg") {
-                        done("Naha, you don't.");
-                    }
-                    else { done("ef"); }
-                }
-            };
-        </script>
+        <form action="upload.php" class="dropzone" id = "testzone"></form>
         
         
         <h1>Upload Page</h1>
