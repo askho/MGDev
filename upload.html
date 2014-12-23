@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Upload</title>
+        <!-- 1 -->
+        <link href="css/dropzone.css" type="text/css" rel="stylesheet" />
+
+        <!-- 2 -->
+        <script src="dropzone.min.js"></script>>
+        <script>Dropzone.options.myAwesomeDropzone = {
+    maxFiles: 1,
+    accept: function(file, done) {
+        console.log("uploaded");
+        done("");
+    },
+    init: function() {
+        this.on("maxfilesexceeded", function(file){
+            alert("No more files please!");
+        });
+    }
+};
+        </script>
+    </head>
+
+    <body>
+        <form action="upload.php" class="dropzone"></form>
+        <script>
+            window.Dropzone.options = {
+                paramName: "file", // The name that will be used to transfer the file
+                maxFilesize: 2, // MB
+                accept: function(file, done) {
+                    if (file.name != "justinbieber.jpg") {
+                        done("Naha, you don't.");
+                    }
+                    else { done("ef"); }
+                }
+            };
+        </script>
+        
+        
+        <h1>Upload Page</h1>
+
+    </body>
+
+</html>
