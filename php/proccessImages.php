@@ -1,3 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <title>Progress Bar</title>
+<style>
+    progress {
+        width: 400px;
+        height: 14px;
+        margin: 50px auto;
+        display: block;
+        /* Important Thing */
+        -webkit-appearance: none;
+        border: none;
+    }
+
+    progress::-webkit-progress-bar {
+        background: black;
+        border-radius: 50px;
+        padding: 2px;
+        box-shadow: 0 1px 0px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    progress::-webkit-progress-value {
+        border-radius: 50px;
+        box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+        background:
+            -webkit-linear-gradient(45deg, transparent, transparent 33%, rgba(0, 0, 0, 0.1) 33%, rgba(0, 0, 0, 0.1) 66%, transparent 66%),
+            -webkit-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.2)),
+            -webkit-linear-gradient(left, #ba7448, #c4672d);
+        
+        background-size: 25px 14px, 100% 100%, 100% 100%;
+        -webkit-animation: move 5s linear 0 infinite;
+    }
+
+    @-webkit-keyframes move {
+        0% {background-position: 0px 0px, 0 0, 0 0}
+        100% {background-position: -100px 0px, 0 0, 0 0}
+    }
+    }
+</style>
+</head>
+<body>
+<!-- Progress bar holder -->
+<progress id = "progress" value="0">
+</progress>
+<h1>Warnings</h1>
+<div id = "warnings"></div>
+<h1>Status</h1>
+<div id="information" style="width"></div>
+</body>
+</html>
+
 <?php
 require 'connection.php';
 /**
@@ -17,6 +69,8 @@ require 'connection.php';
 function processImages($arrayOfImages) {
     $return = true;
     $failedFiles = array();
+    $count = 0;
+    $sizeOfArray =  sizeof($arrayOfImages);
     //Connect to the database!
     global $conn;
     if (!$conn) {
@@ -25,9 +79,11 @@ function processImages($arrayOfImages) {
     //Make thumbnails for each photo, then rip the EXIF data and insert it into the database
     foreach($arrayOfImages as $image) {
         if(makeThumb($image) !== true) {
-            echo "Failed to proccess $image <br />";
+            echo '<script>document.getElementById("warnings").innerHTML = "Failed to proccess'. $image . '" 
+                + document.getElementById("warnings").innerHTML</script>';
             $return = false;
             array_push($failedFiles, $image);
+            $sizeOfArray--;
             continue;
         }
         /*
@@ -57,8 +113,16 @@ function processImages($arrayOfImages) {
         if (!mysqli_query($conn, $query)) {
             echo "Error: " . $query . "<br>" . mysqli_error($conn);
         } 
+        $percent = ++$count / $sizeOfArray;
+        echo '<script language="javascript">
+            document.getElementById("progress").value = '.$percent.';
+            document.getElementById("information").innerHTML="'.$image.' processed.<br />" + document.getElementById("information").innerHTML;
+            </script>';
+        echo str_repeat(' ',1024*64);
+        flush();
     }
-    echo "Done";
+    echo '<script language="javascript">document.getElementById("information").innerHTML = "Process completed<br />" 
+        + document.getElementById("information").innerHTML</script>';
     if($return) {
         return $return;
     }
@@ -66,27 +130,27 @@ function processImages($arrayOfImages) {
     
 }
 /**
-	To use pass in an image
-	Remember to pass in the directory to the image.
-	The images have to be either .jpg, .png, or .gif
-	Change $dest if you want the final destination to be different
-	Change $desired_height to fit the height you want. 
-	RETURN VALUES :
-		-1 = One of the files was not a png jpg or gif
-		-2 = Failure to create image for some reason
-		-3 = One of the files was not a valid jpg, png, or gif
-		true = Everything is good
-	example call:
-	$arrayOfImages = array("../images/photos/0.jpg"
-		,"../images/photos/1.jpg"
-		,"../images/photos/2.jpg"
-		,"../images/photos/3.jpg");
-	make_thumb($arrayOfImages);
+    To use pass in an image
+    Remember to pass in the directory to the image.
+    The images have to be either .jpg, .png, or .gif
+    Change $dest if you want the final destination to be different
+    Change $desired_height to fit the height you want. 
+    RETURN VALUES :
+        -1 = One of the files was not a png jpg or gif
+        -2 = Failure to create image for some reason
+        -3 = One of the files was not a valid jpg, png, or gif
+        true = Everything is good
+    example call:
+    $arrayOfImages = array("../images/photos/0.jpg"
+        ,"../images/photos/1.jpg"
+        ,"../images/photos/2.jpg"
+        ,"../images/photos/3.jpg");
+    make_thumb($arrayOfImages);
 */
 function makeThumb($src) {
-	
-	$dest = "../images/thumbnails/"; //Change this if you want the destiation to be different. /
-	$desired_height = 512;
+    
+    $dest = "../images/thumbnails/"; //Change this if you want the destiation to be different. /
+    $desired_height = 512;
     /* Get name of file  can set the destination inside of thumbnails*/
     $startAt = strrpos($src, "/");
     $finalDest = $dest . substr($src, ++$startAt);
@@ -137,7 +201,7 @@ function makeThumb($src) {
             return -2;
         }
     }
-	return true;
+    return true;
 }
 /**
     Pass the soruce of a photo into the the function and it will return the important EXIF values back
@@ -169,3 +233,4 @@ function readPhoto($src) {
     return $return;
 }
 ?>
+
