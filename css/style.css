@@ -1,0 +1,16 @@
+body {
+	background: url(../images/style/background-small.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	min-height: ;
+}
+.content {
+	color: white;
+}
+#bottomRight {
+	position: absolute;
+	bottom: 15px;
+	right: 25px;
+}
