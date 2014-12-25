@@ -1,5 +1,5 @@
 <?php
-require 'connection.php';
+require '../../php/connection.php';
 $createdNewDir = 0;
 $ds          = "/";  //1
 
@@ -11,7 +11,7 @@ if (!empty($_FILES)) {
 
     $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds;  //4
 
-    $randName = chr( mt_rand( 97 ,122 ) ) .substr( md5( time( ) ) ,1 ) . "." . pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+    $randName = uniqid('', true) . "." . pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
     
     $targetFile =  $targetPath. $randName;  //5
     
@@ -25,52 +25,66 @@ if (!empty($_FILES)) {
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
     <html lang="en">
     <head>
-        <title>Progress Bar</title>
-    <style>
-        progress {
-            width: 400px;
-            height: 14px;
-            margin: 50px auto;
-            display: block;
-            /* Important Thing */
-            -webkit-appearance: none;
-            border: none;
-        }
-
-        progress::-webkit-progress-bar {
-            background: black;
-            border-radius: 50px;
-            padding: 2px;
-            box-shadow: 0 1px 0px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        progress::-webkit-progress-value {
-            border-radius: 50px;
-            box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
-            background:
-                -webkit-linear-gradient(45deg, transparent, transparent 33%, rgba(0, 0, 0, 0.1) 33%, rgba(0, 0, 0, 0.1) 66%, transparent 66%),
-                -webkit-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.2)),
-                -webkit-linear-gradient(left, #ba7448, #c4672d);
-            
-            background-size: 25px 14px, 100% 100%, 100% 100%;
-            -webkit-animation: move 5s linear 0 infinite;
-        }
-
-        @-webkit-keyframes move {
-            0% {background-position: 0px 0px, 0 0, 0 0}
-            100% {background-position: -100px 0px, 0 0, 0 0}
-        }
-        }
-    </style>
+        <link rel="stylesheet" href="../../css/bootstrap.css">
+        <link rel="stylesheet" href="../../css/style.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
+        <script src="../../js/main.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <title>Proccessing Photos</title>
     </head>
     <body>
+   <nav class="navbar navbar-default">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+        <a class="navbar-brand" href="#">
+            <img class = "hidden-xs" src = "../../images/style/logo.png" alt = "logo"/>
+            <img class = "visible-xs" src = "../../images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
+
+        </a>
+        </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href = "#">Proccessing Images</a></li>
+            </ul>
+        </div>
+    </div>
+    </nav>
     <!-- Progress bar holder -->
-    <progress id = "progress" value="0">
-    </progress>
-    <h1>Warnings</h1>
-    <div id = "warnings"></div>
-    <h1>Status</h1>
-    <div id="information" style="width"></div>
+    <div class = "container">
+         <div class="panel panel-default" >
+          <div class="panel-body">
+            <progress id = "progress" value="0">
+            </progress>
+            <p align = "center" id = "percentDone"></p>
+            </div>
+        </div>
+
+         <div class="panel panel-default" style ="height: 200px; overflow: auto;">
+          <div class="panel-body">
+                <h1>Warnings</h1>
+                 <div id = "warnings"></div>
+            </div>
+        </div>
+         <div class="panel panel-default" style ="height: 400px; overflow: auto;">
+          <div class="panel-body">
+                <h1>Status</h1>
+                <div id="information" style="width"></div>
+            </div>
+        </div>
+
+        
+        
+    </div>
+
     </body>
     </html>
     <?php
@@ -79,7 +93,11 @@ if (!empty($_FILES)) {
     //Fix json , decode and then proccess the images.
     $json = str_replace("\\r\\n", '', $_POST["jsonText"]);
     $json = json_decode($json);
-    processImages($json, $_POST["albumName"]);
+    $albumName = $_POST["albumName"];
+    if($_POST["albumNameDropDown"] != "null") {
+        $albumName = $_POST["albumNameDropDown"];
+    }
+    processImages($json, $albumName);
 }
 
 error_reporting(0); //Turn off error reporting because we already deal with it manually. 
@@ -128,7 +146,7 @@ function processImages($arrayOfImages, $albumName) {
         */
         $fileType = strrpos($image, ".");
         $fileType = substr($image, $fileType);
-        if($fileType == ".jpg") {
+        if($fileType == ".jpg" || $fileType == ".JPG") {
             $temp = readPhoto($image);
             /*
                 Checking if the EXIF exists, if it doesn't we will not save
@@ -154,6 +172,7 @@ function processImages($arrayOfImages, $albumName) {
         echo '<script language="javascript">
             document.getElementById("progress").value = '.$percent.';
             document.getElementById("information").innerHTML="'.$image.' processed.<br />" + document.getElementById("information").innerHTML;
+            $("#percentDone").html("'.floor($percent * 100) .' %");
             </script>';
         echo str_repeat(' ',1024*64);
         flush();
@@ -245,19 +264,19 @@ function makeThumb($src) {
     */
     $fileType = strrpos($src, ".");
     $fileType = substr($src, $fileType);
-    if($fileType != ".jpg" && $fileType != ".png" && $fileType != ".gif") {
+    if($fileType != ".jpg" && $fileType != ".png" && $fileType != ".gif" && $fileType != ".JPG" && $fileType != ".GIF" && $fileType != ".PNG") {
         return -1;
     }
     /* read the source image */
-    if($fileType == ".jpg") {
+    if($fileType == ".jpg" || $fileType == ".JPG") {
         if(!($source_image = imagecreatefromjpeg($src))) {
             return -3;
         }
-    } else if($fileType == ".png") {
+    } else if($fileType == ".png" || $fileType == ".PNG") {
         if(!($source_image = imagecreatefrompng($src))) {
             return -3;
         }
-    } else if($fileType == ".gif") {
+    } else if($fileType == ".gif" || $fileType == ".GIF") {
         if(!($source_image = imagecreatefromgif($src))) {
             return -3;
         }
@@ -275,14 +294,14 @@ function makeThumb($src) {
     imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
 
     /* create the physical thumbnail image to its destination */
-    if($fileType == ".jpg") {
+    if($fileType == ".jpg" || $fileType == ".JPG") {
         if(!imagejpeg($virtual_image, $finalDest))
             return -2;
-    } else if($fileType == ".png") {
+    } else if($fileType == ".png" || $fileType == ".PNG") {
         if(!imagepng($virtual_image, $finalDest)) {
             return -2;
         }
-    } else if($fileType == ".gif") {
+    } else if($fileType == ".gif" || $fileType == ".GIF") {
         if(!imagegif($virtual_image, $finalDest)) {
             return -2;
         }
