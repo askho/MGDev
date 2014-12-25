@@ -3,7 +3,7 @@
 $createdNewDir = 0;
 $ds          = DIRECTORY_SEPARATOR;  //1
 
-$storeFolder = ".." .$ds . 'images' . $ds . "photos";   //2
+$storeFolder = ".." .$ds . ".." .$ds . 'images' . $ds . "photos";   //2
 
 if (!empty($_FILES)) {
 
@@ -19,6 +19,10 @@ if (!empty($_FILES)) {
     
     echo 'images' . $ds . "photos" . $ds .$randName;
     //echo $storeFolder . $ds . $randName;
+} else {
+    echo $_POST["jsonText"];
+    echo $_POST["albumName"];
+
 }
 
 
