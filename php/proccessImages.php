@@ -52,6 +52,7 @@
 
 <?php
 require 'connection.php';
+error_reporting(0); //Turn off error reporting because we already deal with it manually. 
 /**
     Pass in an array of images and this will create the thumbnails and 
     add the exif data into the database!
@@ -66,11 +67,14 @@ require 'connection.php';
         true : Everything ran smoothly
         Array: Returns array of the file names of the failed images. (Could be used to delete them);
 */
-function processImages($arrayOfImages) {
+function processImages($arrayOfImages, $albumId) {
     $return = true;
     $failedFiles = array();
     $count = 0;
     $sizeOfArray =  sizeof($arrayOfImages);
+    $query = "INSERT INTO photo (photoDate, dateTaken, aperture, ISO, focalLength, camera, location) VALUES";
+    $last;
+    $first = null;
     //Connect to the database!
     global $conn;
     if (!$conn) {
@@ -78,8 +82,9 @@ function processImages($arrayOfImages) {
     }
     //Make thumbnails for each photo, then rip the EXIF data and insert it into the database
     foreach($arrayOfImages as $image) {
+        set_time_limit(60);
         if(makeThumb($image) !== true) {
-            echo '<script>document.getElementById("warnings").innerHTML = "Failed to proccess'. $image . '" 
+            echo '<script>document.getElementById("warnings").innerHTML = "Failed to proccess'. $image . '<br />" 
                 + document.getElementById("warnings").innerHTML</script>';
             $return = false;
             array_push($failedFiles, $image);
@@ -99,20 +104,21 @@ function processImages($arrayOfImages) {
                 the data.
             */
             if($temp["model"] == NULL) {
-                $query = sprintf("INSERT INTO photo (photoDate, location) VALUES (CURDATE(), '%s')" , $image);
+                $query = $query . sprintf("(CURDATE(), null, null, null, null, null, '%s'), " , $image);
             } else {
-               $query = sprintf("INSERT INTO photo (photoDate, dateTaken, aperture, ISO, focalLength, camera, location) VALUES (CURDATE(), '%s', '%s', '%d', '%s', '%s', '%s')" ,
-                    $temp['date'], $temp['aperture'], $temp['iso'], $temp['focal'], $temp['model'], $image); 
+               $query = $query . sprintf("(CURDATE(), '%s', '%s', '%d', '%s', '%s', '%s'), " , $temp['date'], $temp['aperture'], $temp['iso'], $temp['focal'], $temp['model'], $image); 
             }
         } else {
-            $query = sprintf("INSERT INTO photo (photoDate, location) VALUES (CURDATE(), '%s')" , $image);
+            $query =  $query . sprintf("(CURDATE(), null, null, null, null, null, '%s'), " , $image);
+        }
+        //Update the last and first so we know what to put in which album.
+        $last = $image;
+        if($first == null) {
+            $first = $image;
         }
         /*
-            Running the SQL query. 
+            Update the progress bar
         */
-        if (!mysqli_query($conn, $query)) {
-            echo "Error: " . $query . "<br>" . mysqli_error($conn);
-        } 
         $percent = ++$count / $sizeOfArray;
         echo '<script language="javascript">
             document.getElementById("progress").value = '.$percent.';
@@ -121,13 +127,50 @@ function processImages($arrayOfImages) {
         echo str_repeat(' ',1024*64);
         flush();
     }
+    $query = substr($query,0,strlen($query)-2); //We need to trim off the extra comma that we put in.
+    /*
+        Running the SQL query. 
+    */
+    if (!mysqli_query($conn, $query)) {
+        echo "Error: " . $query . "<br>" . mysqli_error($conn);
+    }
+    putIntoAlbum($first, $last, $albumId);
+    /*
+        Say that we are done!
+    */
     echo '<script language="javascript">document.getElementById("information").innerHTML = "Process completed<br />" 
         + document.getElementById("information").innerHTML</script>';
+    mysqli_close($conn);
     if($return) {
         return $return;
     }
     return $failedFiles;
     
+}
+/**
+    This functin adds the photos found from the start to end into the 
+    photo album in the database.
+    Parameters 
+        $start = The directory to the first image uploaded
+        $end   = The directory to the last image uploaded
+        $albumId = The album to reference
+    Return values:
+        -1 = Sql failure
+        true = everything good
+*/
+function putIntoAlbum($start, $end, $albumId) {
+    global $conn;
+    $query = "
+    INSERT INTO photoalbum (photoID, albumId) 
+    SELECT photoID, $albumId
+    FROM photo
+    WHERE photoID >= (SELECT photoID FROM photo WHERE location = '$start')
+    AND photoID <= (SELECT photoID FROM photo WHERE location = '$end')";
+    if (!mysqli_query($conn, $query)) {
+            echo "Error: " . $query . "<br>" . mysqli_error($conn);
+            return -1;
+    } 
+    return true;
 }
 /**
     To use pass in an image
