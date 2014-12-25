@@ -5,6 +5,7 @@ CREATE TABLE album (
 	,albumTag VARCHAR(1000)
 	,privateLink VARCHAR(255)
 	,CONSTRAINT pk_AlbumID PRIMARY KEY (albumID)
+	,CONSTRAINT UQ_albumName UNIQUE (albumName)
 );
 
 CREATE TABLE photo (
@@ -17,7 +18,7 @@ CREATE TABLE photo (
 	,focalLength INT NULL
 	,camera VARCHAR(50) NULL
 	,description BLOB NULL
-	,location VARCHAR(50) NULL
+	,location VARCHAR(100) NULL
 	,originalFileName VARCHAR(100) NULL
 	,CONSTRAINT pk_photoID PRIMARY KEY (photoID)
 );
