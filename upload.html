@@ -2,44 +2,42 @@
 <html>
     <head>
         <title>Upload</title>
-        <!-- 1 -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
         <link href="css/dropzone.css" type="text/css" rel="stylesheet" />
-
-        <!-- 2 -->
         <script src="dropzone.min.js"></script>>
-        <script>Dropzone.options.myAwesomeDropzone = {
-    maxFiles: 1,
-    accept: function(file, done) {
-        console.log("uploaded");
-        done("");
-    },
-    init: function() {
-        this.on("maxfilesexceeded", function(file){
-            alert("No more files please!");
-        });
-    }
-};
-        </script>
-    </head>
-
-    <body>
-        <form action="upload.php" class="dropzone"></form>
         <script>
-            window.Dropzone.options = {
-                paramName: "file", // The name that will be used to transfer the file
-                maxFilesize: 2, // MB
+            var fileNames = [];
+            var JSONFileName;
+            Dropzone.options.testZone = {
+                maxFiles: null,
+                maxFilesize: 50,
+                acceptedFiles: ".gif,.GIF,.png,.PNG,.jpg,.JPG,.jpeg,.JPEG",
                 accept: function(file, done) {
-                    if (file.name != "justinbieber.jpg") {
-                        done("Naha, you don't.");
-                    }
-                    else { done("ef"); }
+                    done();
+                },
+                complete: function(file){
+                    JSONFileName = JSON.stringify(fileNames);
+                    document.getElementById('jsonField').value = JSONFileName;
+                }
+                ,
+                success: function(responseText) {
+                    fileNames.push(responseText.xhr.responseText);
                 }
             };
         </script>
-        
-        
-        <h1>Upload Page</h1>
+    </head>
 
+    <body >
+        <form action="php/upload.php" method="post" class="dropzone" id="testZone" enctype=”multipart/form-data>
+            Album Name:<br>
+            <input type="text" name="albumName">
+            <br>
+            JSON:<br>
+            <input type="text" name="jsonText" id="jsonField">
+            <input type="submit" value="Submit">
+        </form>
+        <h1>Upload Page</h1>
     </body>
 
 </html>
