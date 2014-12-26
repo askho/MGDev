@@ -5,6 +5,7 @@ CREATE TABLE Album (
 	,albumTag VARCHAR(1000)
 	,privateLink VARCHAR(255)
 	,CONSTRAINT pk_AlbumID PRIMARY KEY (albumID)
+	,CONSTRAINT UQ_albumName UNIQUE (albumName)
 );
 
 CREATE TABLE Photo (
@@ -17,7 +18,7 @@ CREATE TABLE Photo (
 	,focalLength INT NULL
 	,camera VARCHAR(50) NULL
 	,description BLOB NULL
-	,location VARCHAR(50) NULL
+	,location VARCHAR(100) NULL
 	,originalFileName VARCHAR(100) NULL
 	,CONSTRAINT pk_photoID PRIMARY KEY (photoID)
 );
@@ -30,7 +31,23 @@ CREATE TABLE PhotoAlbum (
 	,CONSTRAINT FK_albumID FOREIGN KEY (albumID) REFERENCES album(albumID) ON DELETE CASCADE
 );
 
+
 CREATE TABLE Admin (
     username    VARCHAR(128)     NOT NULL
     ,password   VARCHAR(128)     NOT NULL
+);
+
+CREATE TABLE Category (
+	categoryID INT AUTO_INCREMENT NOT NULL
+	,categoryName VARCHAR(250) NOT NULL
+	,CONSTRAINT PK_categoryID PRIMARY KEY(categoryID)
+);
+
+CREATE TABLE AlbumCategory (
+	albumCategoryID INT AUTO_INCREMENT NOT NULL 
+	,categoryID INT NOT NULL
+	,albumID INT NOT NULL
+	,CONSTRAINT PK_albumCategoryID PRIMARY KEY (albumCategoryID )
+	,CONSTRAINT FK_cateogryID FOREIGN KEY (categoryID) REFERENCES Category(categoryID) ON DELETE CASCADE
+	,CONSTRAINT FK_albumID_AlbumCategory FOREIGN KEY  (albumID) REFERENCES Album(albumID) ON DELETE CASCADE
 );
