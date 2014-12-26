@@ -11,7 +11,10 @@ $( document ).ready(function() {
 	$( "#albumSelector" ).change(function() {
 		$("#albumName").val("");
   	});
-	getAlbums();
+  $( "#categorySelector" ).change(function() {
+    $("#category").val("");
+  });
+	initUploadScreen();
 });
 var fileNames = [];
 var JSONFileName;
@@ -51,16 +54,25 @@ Dropzone.options.testZone = {
     
 
 };
-function getAlbums() {
+/**
+  This function sets up the category, and album selector based on what is returned from categoryAlbumData.php
+*/
+function initUploadScreen() {
 	$("#albumSelector").html("<option value='null'>Loading</option>");
+  $("#categorySelector").html("<option value='null'>Loading</option>");
 	$.ajax({
-  	url: "../php/getAlbums.php",
+  	url: "../php/categoryAlbumData.php",
   	dataType: "json"
 	})
   	.done(function( data ) {
   		$("#albumSelector").html("<option value='null'>Select An Option</option>");
-  		for(i = 0; i < data.length; i++) {
-  			$("#albumSelector").append("<option value='"+data[i][0]+"'>"+data[i][0]+"</option>");
+  		for(i = 0; i < data[0].length; i++) {
+  			$("#albumSelector").append("<option value='"+data[0][i]['albumName']+"'>"+data[0][i]['albumName']+"</option>");
   		}
+      $("#categorySelector").html("<option value='null'>Select An Option</option>");
+      for(i = 0; i < data[1].length; i++) {
+        $("#categorySelector").append("<option value='"+data[1][i]['categoryName']+"'>"+data[1][i]['categoryName']+"</option>");
+      }
+      
   });
 }

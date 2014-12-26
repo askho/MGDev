@@ -1,5 +1,6 @@
 <?php
 require 'connection.php';
+$output = array();
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
@@ -12,6 +13,17 @@ while($row = mysqli_fetch_array($result))
 {
     $rows[] = $row;
 }
-echo json_encode($rows);
+
+$sql = "SELECT categoryName FROM category";
+$result = mysqli_query($conn, $sql);
+
+$rows2 = [];
+while($row = mysqli_fetch_array($result))
+{
+    $rows2[] = $row;
+}
+array_push($output, $rows);
+array_push($output, $rows2);
+echo json_encode($output);
 mysqli_close($conn);
 ?>

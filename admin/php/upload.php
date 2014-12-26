@@ -97,7 +97,11 @@ if (!empty($_FILES)) {
     if($_POST["albumNameDropDown"] != "null") {
         $albumName = $_POST["albumNameDropDown"];
     }
-    processImages($json, $albumName);
+    $categoryName = $_POST["category"];
+    if($_POST["categoryDropDown"] != "null") {
+        $categoryName = $_POST["categoryDropDown"];
+    }
+    processImages($json, $albumName, $categoryName);
 }
 
 error_reporting(0); //Turn off error reporting because we already deal with it manually. 
@@ -110,12 +114,12 @@ error_reporting(0); //Turn off error reporting because we already deal with it m
 
     It will not rip EXIF meta data from non jpeg files because they don't have any.
     EX:
-        processImages($arrayOfImages);
+        processImages($arrayOfImages, "Album1", "Wedding Photos");
     RETURN VALUES:
         true : Everything ran smoothly
         Array: Returns array of the file names of the failed images. (Could be used to delete them);
 */
-function processImages($arrayOfImages, $albumName) {
+function processImages($arrayOfImages, $albumName, $categoryName) {
     $return = true;
     $failedFiles = array();
     $count = 0;
@@ -184,7 +188,8 @@ function processImages($arrayOfImages, $albumName) {
     if (!mysqli_query($conn, $query)) {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);
     }
-    putIntoAlbum($first, $last, $albumName);
+    putIntoAlbum($first, $last, $albumName, sizeof($arrayOfImages));
+    putIntoCategory($categoryName, $albumName);
     /*
         Say that we are done!
     */
@@ -204,11 +209,12 @@ function processImages($arrayOfImages, $albumName) {
         $start = The directory to the first image uploaded
         $end   = The directory to the last image uploaded
         $albumName = The album to reference
+        $length = length of array that will be added
     Return values:
         -1 = Sql failure
         true = everything good
 */
-function putIntoAlbum($start, $end, $albumName) {
+function putIntoAlbum($start, $end, $albumName, $length) {
     global $conn;
     $id;
     $query = "SELECT albumID FROM album WHERE albumName = '$albumName'";
@@ -228,6 +234,46 @@ function putIntoAlbum($start, $end, $albumName) {
     FROM photo
     WHERE photoID >= (SELECT photoID FROM photo WHERE location = '$start')
     AND photoID <= (SELECT photoID FROM photo WHERE location = '$end')";
+    if($length == 1) {
+        $query = "
+    INSERT INTO photoalbum (photoID, albumID) 
+    SELECT photoID, '$id'
+    FROM photo
+    WHERE photoID = (SELECT photoID FROM photo WHERE location = '$start')";
+    }
+    if (!mysqli_query($conn, $query)) {
+            echo "Error: " . $query . "<br>" . mysqli_error($conn);
+            return -1;
+    } 
+    return true;
+}
+/**
+        Puts the album into the right category
+
+*/
+function putIntoCategory($categoryName, $albumName){
+    global $conn;
+    $catID;
+    $albumID;
+    $query = "SELECT categoryID FROM category WHERE categoryName = '$categoryName'";
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result) == 0) {
+        $query = "INSERT INTO category (categoryName) VALUES ('$categoryName')";
+        $result = mysqli_query($conn, $query);
+        $query = "SELECT categoryID FROM category WHERE categoryName = '$categoryName'";
+        $result = mysqli_query($conn, $query);
+    } 
+    while($row = mysqli_fetch_assoc($result)) {
+        $catID = $row["categoryID"];
+    }
+    $query = "SELECT albumID FROM album WHERE albumName = '$albumName'";
+    $result = mysqli_query($conn, $query);
+    while($row = mysqli_fetch_assoc($result)) {
+        $albumID = $row["albumID"];
+    }
+    $query = "
+    INSERT INTO albumCategory (categoryID, albumID) 
+    VALUES('$catID', $albumID)";
     if (!mysqli_query($conn, $query)) {
             echo "Error: " . $query . "<br>" . mysqli_error($conn);
             return -1;
