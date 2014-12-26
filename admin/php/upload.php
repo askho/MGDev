@@ -3,7 +3,7 @@ require '../../php/connection.php';
 $createdNewDir = 0;
 $ds          = "/";  //1
 
-$storeFolder = ".." .$ds . ".." .$ds . 'images' . $ds . "photos";   //2
+$storeFolder = ".." .$ds . ".." .$ds . 'images' . $ds . "fullPhotos";   //2
 
 if (!empty($_FILES)) {
 
@@ -17,7 +17,7 @@ if (!empty($_FILES)) {
     
     move_uploaded_file($tempFile,$targetFile); //6
     
-    echo 'images' . $ds . "photos" . $ds .$randName;
+    echo $randName;
     //echo $storeFolder . $ds . $randName;
 } else {
     //Output the actual html page if needed. 
@@ -127,6 +127,10 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     $query = "INSERT INTO photo (photoDate, dateTaken, aperture, ISO, focalLength, camera, location) VALUES";
     $last;
     $first = null;
+    $photoDest = "../../images/photos/"; //Change this if you want the destiation to be different. /
+    $fullHeight = 2048;
+    $thumbnailDest = "../../images/thumbnails/";
+    $thumbHeight = 256;
     //Connect to the database!
     global $conn;
     if (!$conn) {
@@ -135,8 +139,8 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     //Make thumbnails for each photo, then rip the EXIF data and insert it into the database
     foreach($arrayOfImages as $image) {
         set_time_limit(60);
-        $image = "../../".$image;
-        if(makeThumb($image) !== true) {
+        $src = "../../images/fullPhotos/".$image;
+        if(makeImages($src, $photoDest, $fullHeight) !== true) {
             echo '<script>document.getElementById("warnings").innerHTML = "Failed to proccess'. $image . '<br />" 
                 + document.getElementById("warnings").innerHTML</script>';
             $return = false;
@@ -144,14 +148,15 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
             $sizeOfArray--;
             continue;
         }
+        makeImages($src, $thumbnailDest, $thumbHeight);
         /*
             Checking file type we will only rip data if it is a jpeg. 
             Only jpeg holds metadata :(
         */
-        $fileType = strrpos($image, ".");
-        $fileType = substr($image, $fileType);
+        $fileType = strrpos($src, ".");
+        $fileType = substr($src, $fileType);
         if($fileType == ".jpg" || $fileType == ".JPG") {
-            $temp = readPhoto($image);
+            $temp = readPhoto($src);
             /*
                 Checking if the EXIF exists, if it doesn't we will not save
                 the data.
@@ -296,12 +301,9 @@ function putIntoCategory($categoryName, $albumName){
         ,"../images/photos/1.jpg"
         ,"../images/photos/2.jpg"
         ,"../images/photos/3.jpg");
-    make_thumb($arrayOfImages);
+    makeImages($arrayOfImages, 1024, "../../images/photos/");
 */
-function makeThumb($src) {
-    
-    $dest = "../../images/thumbnails/"; //Change this if you want the destiation to be different. /
-    $desired_height = 512;
+function makeImages($src, $dest, $desired_height) {
     /* Get name of file  can set the destination inside of thumbnails*/
     $startAt = strrpos($src, "/");
     $finalDest = $dest . substr($src, ++$startAt);
@@ -354,6 +356,7 @@ function makeThumb($src) {
     }
     return true;
 }
+
 /**
     Pass the soruce of a photo into the the function and it will return the important EXIF values back
     RETURN
