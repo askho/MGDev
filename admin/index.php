@@ -13,10 +13,8 @@
             <br>
             <input type="submit" value="Submit" name="submit">
         </form>
-        <a href="php/login.php">login page</a>
-        <a href="login_success.php">login_success page</a>
-        <a href="php/logout.php">click here to logout</a>
-        <a href="test_admin_only_page1.php">admin page</a>
+        <a href="upload.php">upload photos</a>
+        <a href="edit_uploads.php">edit photos</a>
     </body>
 
 </html>
