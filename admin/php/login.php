@@ -38,27 +38,32 @@ function login() {
     }
 
     // Query database - sql injection protected
-    $sql = "SELECT username, password 
+    $sql = "SELECT username, hash 
         FROM Admin 
-        WHERE username = ? AND password = ?";
+        WHERE username = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $user, $pass);
+    $stmt->bind_param("s", $user);
     $stmt->execute();
-    $result = mysqli_stmt_get_result($stmt) -> num_rows;
-    
-    // check if query returned one row for given user
-    if ($result == 1) {
-        // log user into session
-        session_regenerate_id();
-        $_SESSION['user']= $user;         
-        $_SESSION['pass']= $pass;       
-        session_write_close();
-        
-        // redirect to control panel
-        header("location:../control_panel.php");
-    } else {
-        return "<br>Wrong username/password, please try again."; 
+    $stmt->bind_result($fUser, $fHash);
+
+    // compare with all passwords for given username
+    while ($stmt->fetch()) {
+
+        // compare hashes to find valid password
+        if ( hash_equals($fHash, crypt($pass, $fHash)) ) {
+            // log user into session
+            session_regenerate_id();
+            $_SESSION['user']= $user;         
+            $_SESSION['pass']= $pass;       
+            session_write_close();
+
+            // redirect to control panel
+            header("location:../control_panel.php");
+        }
     }
+
+    // user and hash-pass combination not found
+    return "<br>Wrong username/password, please try again."; 
 }
 
 function checkDBConnection($connection){
