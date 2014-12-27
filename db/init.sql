@@ -34,7 +34,7 @@ CREATE TABLE PhotoAlbum (
 
 CREATE TABLE Admin (
     username    VARCHAR(128)     NOT NULL
-    ,password   VARCHAR(128)     NOT NULL
+    ,hash       VARCHAR(128)     NOT NULL
 );
 
 CREATE TABLE Category (
