@@ -37,8 +37,6 @@ function login() {
         return "<br>Please enter your username and password and try again"; 
     }
 
-
-
     // Query database - sql injection protected
     $sql = "SELECT username, hash 
         FROM Admin 
