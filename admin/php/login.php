@@ -37,14 +37,17 @@ function login() {
         return "<br>Please enter your username and password and try again"; 
     }
 
-    // query database for username and password
+    // Query database - sql injection protected
     $sql = "SELECT username, password 
         FROM Admin 
-        WHERE username = '$user' AND password = '$pass'";
-    $result = mysqli_query($conn, $sql);
-
+        WHERE username = ? AND password = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $user, $pass);
+    $stmt->execute();
+    $result = mysqli_stmt_get_result($stmt) -> num_rows;
+    
     // check if query returned one row for given user
-    if (mysqli_num_rows($result) == 1) {
+    if ($result == 1) {
         // log user into session
         session_regenerate_id();
         $_SESSION['user']= $user;         
