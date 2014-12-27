@@ -1,3 +1,10 @@
+<?php
+session_start();
+if(isset($_SESSION['user'])){
+    header("location:control_panel.php");
+}
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,8 +20,5 @@
             <br>
             <input type="submit" value="Submit" name="submit">
         </form>
-        <a href="upload.php">upload photos</a>
-        <a href="edit_uploads.php">edit photos</a>
     </body>
-
 </html>

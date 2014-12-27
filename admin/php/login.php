@@ -2,7 +2,7 @@
 //displayPostData();
 
 if(isset($_SESSION['user'])){
-    header("location:../test_admin_only_page1.php");
+    header("location:../control_panel.php");
 }
 
 
@@ -10,7 +10,7 @@ if(isset($_SESSION['user'])){
 ob_start();
 session_start();
 
-require 'connection.php';
+require '../../php/connection.php';
 
 // login
 if(isset($_POST['submit']))
@@ -43,18 +43,16 @@ function login() {
         WHERE username = '$user' AND password = '$pass'";
     $result = mysqli_query($conn, $sql);
 
-    // check if query returned a row for given user
+    // check if query returned one row for given user
     if (mysqli_num_rows($result) == 1) {
         // log user into session
         session_regenerate_id();
         $_SESSION['user']= $user;         
         $_SESSION['pass']= $pass;       
         session_write_close();
-        header("location:../login_success.php");
-
-        // display user data
-        $row = mysqli_fetch_assoc($result); 
-        return "<br>login successful: id " . $row["username"] . ", password " . $row["password"];
+        
+        // redirect to control panel
+        header("location:../control_panel.php");
     } else {
         return "<br>Wrong username/password, please try again."; 
     }
@@ -64,7 +62,7 @@ function checkDBConnection($connection){
     if (!$connection) {
         die("Connection failed: " . mysqli_connect_error());
     } else {
-        echo "<br>Connected to database successfully";
+        //echo "<br>Connected to database successfully";
     }
     ob_end_flush();
 }
@@ -80,9 +78,7 @@ function displayPostData(){
 ?>
 <html>
     <body>
-        <a href="../index.php">login page</a>
-        <a href="../login_success.php">login_success page</a>
-        <a href="logout.php">click here to logout</a>
-        <a href="../test_admin_only_page1.php">admin</a>
+        <br>
+        <a href="../index.php">Back to login</a>
     </body>
 </html>

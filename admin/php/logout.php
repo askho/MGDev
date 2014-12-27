@@ -8,5 +8,7 @@ session_destroy();
     </head>
     <body>
         Logged out
+        <br>
+        <a href="../index.php">login</a>
     </body>
 </html>
