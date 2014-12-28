@@ -48,6 +48,8 @@ require './php/logged_in.php';
                     <li><a id = "addPhotos" href = "#">Add Photos</a></li>
                     <li><a id = "editPhotos" href = "#">Edit Photos</a></li>
                     <li><a id = "editBlog" href = "#">Edit Blog</a></li>
+                    <li><a id = "controlPanel" href = "control_panel.php">Control Panel</a></li>
+                    <li><a id = "logout" href = "php/logout.php">Logout</a></li>
                 </ul>
             </div>
         </div>
