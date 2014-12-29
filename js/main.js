@@ -11,13 +11,6 @@ $( document ).ready(function() {
             alert("Booking was pressed");
         }
     })
-    $(".navbar-brand").click(function() {
-        $("#content").fadeOut(function(){
-            $("#content").html("");
-            $("#content").show();
-        });
-        
-    })
 });
 /*
     This grabs the thumbnails for a category and places them inside content and inits isotope
@@ -82,9 +75,6 @@ function showPictures(albumID, albumName) {
             var thumbnail = "images/thumbnails/"+data[i].location;
             var photoName = data[i].photoName;
             var photoID = data[i].photoID;
-            if(photoName == null) {
-                photoName = "";
-            }
             $("#isotopeContainer").append(" <figure class = 'isotopeElement' id = '"+photoID+"'>\
                                                 <a href = '#''>\
                                                 <img src='"+thumbnail+"'>\
