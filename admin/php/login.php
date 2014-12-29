@@ -50,7 +50,7 @@ function login() {
     while ($stmt->fetch()) {
 
         // compare hashes to find valid password
-        if ( hash_equals($fHash, crypt($pass, $fHash)) ) {
+        if ($fHash === crypt($pass, $fHash))  {
             // log user into session
             session_regenerate_id();
             $_SESSION['user']= $user;         
