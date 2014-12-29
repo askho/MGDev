@@ -10,6 +10,16 @@
 	<script src="js/main.js"></script>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+<?php
+  /**
+    Calling the corresponding JS functino to build the page. 
+  */
+  $albumID = $_GET['albumID'];
+  $albumName = $_GET['albumName'];
+  echo "<script>$(document).ready(function() {
+    showPictures($albumID, '$albumName');
+  });</script>";
+?>
 </head>
 
 <body>
