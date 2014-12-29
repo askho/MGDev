@@ -1,0 +1,1 @@
+This is where the half sized pictures to be viewed will be stored
