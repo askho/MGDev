@@ -198,8 +198,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     /*
         Say that we are done!
     */
-    echo '<script language="javascript">document.getElementById("information").innerHTML = "Process completed<br />" 
-        + document.getElementById("information").innerHTML</script>';
+    echo '<script language="javascript">window.location.replace("../upload.html");</script>';
     mysqli_close($conn);
     if($return) {
         return $return;
