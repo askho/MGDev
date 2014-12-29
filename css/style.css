@@ -32,7 +32,7 @@ body {
 	background-color:white;
 }
 progress {
-    width: 800px;
+    width: auto;
     height: 14px;
     margin: 50px auto;
     display: block;
