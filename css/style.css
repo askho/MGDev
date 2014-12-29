@@ -14,10 +14,11 @@ body {
 	color: white;
 }
 #bottomRight {
-	position: absolute;
+	position: fixed;
 	bottom: 15px;
 	right: 25px;
 }
+
 .well:empty {
 	display:none;
 }
@@ -63,4 +64,43 @@ progress::-webkit-progress-value {
     0% {background-position: 0px 0px, 0 0, 0 0}
     100% {background-position: -100px 0px, 0 0, 0 0}
 }
+#categories {
+    display: inline-block;
+    position: relative;
+    font-size: 2em;
+    color: white;
+    
+}
+#categories a {
+    text-decoration: none;
+    color: white;
+    padding: 50px;
+    padding-top: 20px;
+}
+figure {
+    float: left;
+    clear: both;
+    
+    position: relative;
+    overflow: auto;
+    
+    margin: 0 auto;
+    padding: 30px 0 0 0;
+    font-size: 15px;
+}
+
+figure img {
+    vertical-align: bottom;
+}
+
+figure figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    background: rgba(0,0,0,0.7);
+    text-align: center;
+    color: #fff; 
+    padding: 10px;
 }

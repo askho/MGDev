@@ -132,6 +132,9 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     $thumbnailDest = "../../images/thumbnails/";
     $thumbHeight = 256;
     //Connect to the database!
+    if($sizeOfArray == 0) {
+        echo '<script language="javascript">window.location.replace("../upload.html");</script>';
+    }
     global $conn;
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
@@ -198,8 +201,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     /*
         Say that we are done!
     */
-    echo '<script language="javascript">document.getElementById("information").innerHTML = "Process completed<br />" 
-        + document.getElementById("information").innerHTML</script>';
+    echo '<script language="javascript">window.location.replace("../upload.html");</script>';
     mysqli_close($conn);
     if($return) {
         return $return;
