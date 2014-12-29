@@ -41,11 +41,11 @@ function getAlbumThumbs(categoryID) {
                                                 <figcaption>"+albumName+"</figcaption>\
                                                 </a>\
                                             </figure>");
-            (function(j) {
-                $("#"+j).click(function() {
-                    showPictures(albumID, albumName);
+            (function(albumID2, albumName2) {
+                $("#"+albumID2).click(function() {
+                    showPictures(albumID2, albumName2);
                 });
-            })(albumID)
+            })(albumID, albumName)
 
         }
         $("#content").fadeIn();

@@ -132,6 +132,9 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     $thumbnailDest = "../../images/thumbnails/";
     $thumbHeight = 256;
     //Connect to the database!
+    if($sizeOfArray == 0) {
+        echo '<script language="javascript">window.location.replace("../upload.html");</script>';
+    }
     global $conn;
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
