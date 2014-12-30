@@ -1,20 +1,23 @@
 $( document ).ready(function() {
-	$(".nav.navbar-nav.navbar-right").click(function(event){
-		if($(event.target).is("#addPhotos")) {
-			alert("add photos was pressed");
-		} else if($(event.target).is("#editPhotos")) {
-			alert("edit photos was pressed");
-		} else if($(event.target).is("#editBlog")) {
-			alert("blog was pressed");
-		}
-	})
-	$( "#albumSelector" ).change(function() {
-		$("#albumName").val("");
-  	});
-  $( "#categorySelector" ).change(function() {
-    $("#category").val("");
-  });
-	initUploadScreen();
+    $(".nav.navbar-nav.navbar-right").click(function(event){
+        if($(event.target).is("#addPhotos")) {
+            alert("add photos was pressed");
+        } else if($(event.target).is("#editPhotos")) {
+            alert("edit photos was pressed");
+        } else if($(event.target).is("#editBlog")) {
+            alert("blog was pressed");
+        }
+    })
+    $( "#albumSelector" ).change(function() {
+        $("#albumName").val("");
+    });
+    $( "#categorySelector" ).change(function() {
+        $("#category").val("");
+    });
+    $("#reset").click(function() {
+        initUploadScreen();
+    })
+    initUploadScreen();
 });
 var fileNames = [];
 var JSONFileName;
@@ -24,12 +27,12 @@ Dropzone.options.testZone = {
             $("#previewWell").show(100);
         });
         this.on("processing", function(file) {
-          $("#submit").prop('disabled', true);
-          $("#submit").addClass('btn-danger').removeClass('btn-success')
-          $("#submit").html("Waiting For Upload");
+            $("#submit").prop('disabled', true);
+            $("#submit").addClass('btn-danger').removeClass('btn-success')
+            $("#submit").html("Waiting For Upload");
         });
         this.on("totaluploadprogress", function(progress) {
-          $("#progress").val(progress);
+            $("#progress").val(progress);
         });
     },
     maxFiles: null,
@@ -51,28 +54,77 @@ Dropzone.options.testZone = {
     success: function(responseText) {
         fileNames.push(responseText.xhr.responseText);
     },
-    
+
 
 };
 /**
-  This function sets up the category, and album selector based on what is returned from categoryAlbumData.php
+This function sets up the category, and album selector based on what is returned from categoryAlbumData.php
 */
 function initUploadScreen() {
-	$("#albumSelector").html("<option value='null'>Loading</option>");
-  $("#categorySelector").html("<option value='null'>Loading</option>");
-	$.ajax({
-  	url: "../php/categoryAlbumData.php",
-  	dataType: "json"
-	})
-  	.done(function( data ) {
-  		$("#albumSelector").html("<option value='null'>Select An Option</option>");
-  		for(i = 0; i < data[0].length; i++) {
-  			$("#albumSelector").append("<option value='"+data[0][i]['albumName']+"'>"+data[0][i]['albumName']+"</option>");
-  		}
-      $("#categorySelector").html("<option value='null'>Select An Option</option>");
-      for(i = 0; i < data[1].length; i++) {
-        $("#categorySelector").append("<option value='"+data[1][i]['categoryName']+"'>"+data[1][i]['categoryName']+"</option>");
-      }
-      
-  });
+    $("#category").prop('disabled', false);
+    $("#albumName").prop('disabled', false);
+    $("#albumName").val("");
+    $("#category").val("");
+    $("#albumSelector").prop('disabled', false);
+    $("#categorySelector").prop('disabled', false);
+    $("#category").keydown(function() {
+        $("#albumSelector").html("<option value='null'>Select An Option</option>");
+        $("#albumSelector").prop('disabled', true);
+        $("#categorySelector").html("<option value='null'>Select An Option</option>");
+        $("#categorySelector").prop('disabled', true);
+    });
+    $("#albumName").keydown(function() {
+        $("#albumSelector").html("<option value='null'>Select An Option</option>");
+        $("#albumSelector").prop('disabled', true);
+        $("#categorySelector").html("<option value='null'>Select An Option</option>");
+        $("#categorySelector").prop('disabled', true);
+    });
+    $("#albumSelector").html("<option value='null'>Loading</option>");
+    $("#categorySelector").html("<option value='null'>Loading</option>");
+    $.ajax({
+        url: "../php/categoryAlbumData.php",
+        dataType: "json"
+    })
+    .done(function( data ) {
+        $("#albumSelector").html("<option value='null'>Select An Option</option>");
+        for(i = 0; i < data[0].length; i++) {
+            $("#albumSelector").append("<option value='"+data[0][i]['albumName']+"'>"+data[0][i]['albumName']+"</option>");
+        }
+        $("#categorySelector").html("<option value='null'>Select An Option</option>");
+        for(i = 0; i < data[1].length; i++) {
+            $("#categorySelector").append("<option value='"+data[1][i]['categoryName']+"'>"+data[1][i]['categoryName']+"</option>");
+        }
+        $("#albumSelector").change(function(){
+            $("#category").unbind("keydown");
+            $("#albumName").unbind("keydown");
+            $("#categorySelector").html("");
+            $("#category").keydown(function() {
+                $("#categorySelector").html("<option value='null'>Select An Option</option>");
+                $("#categorySelector").prop('disabled', true);
+            });
+            var currentlySelected = $(this).val();
+            $("#albumName").prop('disabled', true);
+            for(i = 0; i < data[2].length; i++) {
+                if(data[2][i]['albumName'] == currentlySelected) {
+                    $("#categorySelector").append("<option value='"+data[2][i]['categoryName']+"'>"+data[2][i]['categoryName']+"</option>");
+                }
+            }
+        });
+        $("#categorySelector").change(function(){
+            $("#category").unbind("keydown");
+            $("#albumName").unbind("keydown");
+            $("#albumSelector").html("");
+            $("#albumName").keydown(function() {
+                $("#albumSelector").html("<option value='null'>Select An Option</option>");
+                $("#albumSelector").prop('disabled', true);
+            });
+            var currentlySelected = $(this).val();
+            $("#category").prop('disabled', true);
+            for(i = 0; i < data[2].length; i++) {
+                if(data[2][i]['categoryName'] == currentlySelected) {
+                    $("#albumSelector").append("<option value='"+data[2][i]['albumName']+"'>"+data[2][i]['albumName']+"</option>");
+                }
+            }
+        });
+    });
 }

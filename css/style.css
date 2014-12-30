@@ -115,6 +115,9 @@ figure figcaption {
 	padding-left: 10px;
 	padding-right: 10px;
 }
+select:disabled {
+    background: #dddddd;
+}
 /**
  * Featherlight – ultra slim jQuery lightbox
  * Version 1.0.3 - http://noelboss.github.io/featherlight/

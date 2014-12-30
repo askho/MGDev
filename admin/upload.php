@@ -87,7 +87,9 @@ require './php/logged_in.php';
                 </div>
                 <input type="hidden" name="jsonText" id="jsonField">
                 <button class="btn btn-danger" type="submit" disabled = "disabled" id = "submit">Waiting For Upload</button>
+                <button class="btn btn-info" type = "button" id = "reset">Reset Form</button>
             </form>
+
         </div>
         <div class = "well" id ="previewWell">
             <progress id = "progress" value="0" max = "100">

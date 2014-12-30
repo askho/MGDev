@@ -193,10 +193,8 @@ function showPictures(data, albumName, albumID, page) {
             $("#navContainer"+i).addClass("active");
         }
     }
+    $("#content").fadeIn("fast",function() {initIsotope()});
     
-    $("#content").fadeIn("fast", function(){
-        initIsotope();
-    });
     
 }
 /*
@@ -238,14 +236,15 @@ function getCategories() {
     This initalizes isotope
 */
 function initIsotope() {
-    var $container = $('#isotopeContainer').imagesLoaded( function() {
+    var $container = $('#isotopeContainer');
+    $container.imagesLoaded( function() {
       $container.isotope({
           itemSelector: '.isotopeElement',
           layoutMode: "fitRows"
+      });
     });
-  });
-}
 
+}
 /**
  * Featherlight - ultra slim jQuery lightbox
  * Version 1.0.3 - http://noelboss.github.io/featherlight/
