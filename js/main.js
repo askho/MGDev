@@ -12,7 +12,7 @@ $( document ).ready(function() {
         } else if($(event.target).is("#booking")) {
             alert("Booking was pressed");
         }
-    })
+    });
 });
 /*
     This checks the URL and updates the content accordingly. 
@@ -24,9 +24,17 @@ $(window).on('popstate', function() {
     if(fileName == "viewAlbum.php") {
         getAlbumThumbs(getQueryVariable("categoryID"));
     } else if(fileName == "viewPhotos.php") {
-        showPictures(getQueryVariable("albumID"), getQueryVariable("albumName"));
+        loadPictures(getQueryVariable("albumID"), getQueryVariable("albumName"));
     } else if(fileName == "viewCategories.php") {
         getCategories();
+    }
+    if(fileName == "viewPhotos.php") {
+        if(!getQueryVariable("pageNumber")) {
+            var pageNumber = 0;
+        } else {
+            var pageNumber = getQueryVariable("pageNumber");
+        }
+        loadPictures(getQueryVariable("albumID"), getQueryVariable("albumName"), pageNumber);
     }
 });
 /*
@@ -73,7 +81,7 @@ function getAlbumThumbs(categoryID) {
                                             </figure>");
             (function(albumID2, albumName2, href) {
                 $("#"+albumID2).click(function(event) {
-                    showPictures(albumID2, albumName2);
+                    loadPictures(albumID2, albumName2);
                     if(history.pushState) {
                         history.pushState(null, null, href)
                         event.preventDefault();
@@ -82,15 +90,17 @@ function getAlbumThumbs(categoryID) {
             })(albumID, albumName, url)
 
         }
-        $("#content").fadeIn();
-        initIsotope();
+        
+        $("#content").fadeIn("fast", function() {
+            initIsotope();
+        });
     })
     .fail(function() {
         alert("Failed to get the albums");
     });
 }
 
-function showPictures(albumID, albumName) {
+function loadPictures(albumID, albumName, pageNumber) {
     $.ajax({
         url: "php/getPhotos.php",
         dataType: "json",
@@ -98,46 +108,96 @@ function showPictures(albumID, albumName) {
         data:{album: albumID}
     })
     .done(function( data ) {
-        console.log(data);
-        $("#content").html("<h1>"+albumName+"</hi>");
-        $("#content").append("<div id ='isotopeContainer'></div>");
-        $("#content").hide();
-        if(data == ""){
-            alert("No albums found");
-        }
-        for(i = 0; i < data.length; i++) {
-            var thumbnail = "images/thumbnails/"+data[i].location;
-            var photoName = data[i].photoName;
-            var photoID = data[i].photoID;
-            if(photoName == null) {
-                photoName = "";
-            }
-            $("#isotopeContainer").append(" <figure class = 'isotopeElement' id = '"+photoID+"'>\
-                                                <a href = '#'>\
-                                                <img src='"+thumbnail+"'>\
-                                                <figcaption>"+photoName+"</figcaption>\
-                                                </a>\
-                                            </figure>");
-            (function(j, object) {
-                $("#"+j).click(function() {
-                    var image = "images/photos/"+object.location;
-                    var caption = "<div class = 'caption'>Date Taken: " + object.dateTaken 
-                        + "<br />ISO: " + object.ISO 
-                        + "<br />Camera: " + object.camera
-                        + "<br />Focal Length: " + object.focalLength + "mm"
-                        +"<br />Aperture: " + object.aperture + "</div>";
-                    $(this).featherlight("<img class = 'lightboxImage' src = "+image+"><br />" + caption, {type: "html"});
-                    event.preventDefault();
-                });
-            })(photoID, data[i])
+        loadPictures.data = data;
+        loadPictures.currentLoadedPage = 0;
+    if(pageNumber != null || pageNumber == 0) {
+        loadPictures.currentLoadedPage = pageNumber;
+        showPictures(loadPictures.data, albumName, albumID, pageNumber);
+    } else {
 
-        }
-        $("#content").fadeIn();
-        initIsotope();
+        showPictures(loadPictures.data, albumName, albumID);
+    }
     })
     .fail(function() {
         alert("Failed to get the albums");
     });
+}
+function showPictures(data, albumName, albumID, page) {
+    $("#content").html("<h1>"+albumName+"</hi>");
+    $("#content").append("<div id ='isotopeContainer'></div>");
+    $("#content").append("<nav><ul id = 'pageNavigation' class = 'pagination'></ul?</nav>");
+    $("#content").hide();
+    if(page == null) {
+        var currentPage = 0;
+    } else {
+        var currentPage = parseInt(loadPictures.currentLoadedPage);
+    }
+    if(page == null || page == 0){
+        loadTo = 14;
+        startFrom = 0;
+        if (loadTo > data.length) {
+            loadTo = data.length;
+        }
+        var page = 0;
+    } else {
+        startFrom = page * 15;
+        loadTo = startFrom + 14;
+        if (loadTo > data.length) {
+            loadTo = data.length;
+        }
+    }
+    if(data == ""){ 
+        alert("No albums found");
+    }
+    for(i = startFrom; i < loadTo; i++) {
+        var thumbnail = "images/thumbnails/"+data[i].location;
+        var photoName = data[i].photoName;
+        var photoID = data[i].photoID;
+        if(photoName == null) {
+            photoName = "";
+        }
+        $("#isotopeContainer").append(" <figure class = 'isotopeElement'>\
+                                            <a id = '"+photoID+"'href = ''>\
+                                            <img src='"+thumbnail+"'>\
+                                            <figcaption>"+photoName+"</figcaption>\
+                                            </a>\
+                                        </figure>");
+        (function(j, object) {
+            $("#"+j).click(function(event) {
+                var image = "images/photos/"+object.location;
+                var caption = "<div class = 'caption'>Date Taken: " + object.dateTaken 
+                    + "<br />ISO: " + object.ISO 
+                    + "<br />Camera: " + object.camera
+                    + "<br />Focal Length: " + object.focalLength + "mm"
+                    +"<br />Aperture: " + object.aperture + "</div>";
+                $.featherlight("<img class = 'lightboxImage' src = "+image+"><br />" + caption, {type: "html"});
+                event.preventDefault();
+            });
+        })(photoID, data[i])
+    }
+    var maxPage = 5 + currentPage;
+    var maxPossiblePages = data.length / 14;
+    for(i = currentPage - 3; i < maxPage && i < Math.floor(maxPossiblePages); i++) {
+        var url = "viewPhotos.php?albumID=" + albumID +"&albumName="+albumName+"&pageNumber="+(i-1); 
+        if(i > 0 ) {
+            $("#pageNavigation").append("<li id='navContainer"+i+"'><a id = 'nav"+i+"' href='"+url+"'>"+i+"</a></li>");
+            (function(j, href) {
+                $("#nav"+i).click(function(event){
+                    loadPictures(albumID, albumName, j-1)
+                    history.pushState(null, null, href)
+                    event.preventDefault();
+                });
+            })(i, url);
+        }
+        if(i == (currentPage + 1)) {
+            $("#navContainer"+i).addClass("active");
+        }
+    }
+    
+    $("#content").fadeIn("fast", function(){
+        initIsotope();
+    });
+    
 }
 /*
     This grabs the categories to be shown.

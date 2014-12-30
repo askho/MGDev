@@ -105,8 +105,7 @@ figure figcaption {
     padding: 10px;
 }
 .featherlight img{
-	max-width:65%;
-    max-height:65%;
+    max-height:75vh;
     height: auto;
     position: static;
     top: 0; right: 0; bottom: 0; left: 0;
@@ -137,6 +136,7 @@ figure figcaption {
 		/* styling */
 		cursor: pointer;
 		background: #333;
+		color: white;
 		/* IE8 "hack" for nested featherlights */
 		background: rgba(0, 0, 0, 0);
 	}

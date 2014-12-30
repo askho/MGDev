@@ -16,8 +16,14 @@
   */
   $albumID = $_GET['albumID'];
   $albumName = $_GET['albumName'];
+  if(!isset($_GET['pageNumber'])) {
+    $pageNumber = 0;
+  } else {
+      $pageNumber = $_GET['pageNumber'];
+  }
+
   echo "<script>$(document).ready(function() {
-    showPictures($albumID, '$albumName');
+    loadPictures($albumID, '$albumName', '$pageNumber');
   });</script>";
 ?>
 </head>
