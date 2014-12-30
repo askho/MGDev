@@ -241,9 +241,7 @@ function initIsotope() {
     var $container = $('#isotopeContainer').imagesLoaded( function() {
       $container.isotope({
           itemSelector: '.isotopeElement',
-          masonry: {
-            gutter: 15
-        }
+          layoutMode: "fitRows"
     });
   });
 }
