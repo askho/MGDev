@@ -64,7 +64,7 @@ function getAlbumThumbs(categoryID) {
     .done(function( data ) {
         $("#content").html("<h1>Albums</hi>");
         $("#content").append("<div id ='isotopeContainer'></div>");
-        $("#content").hide();
+        $("#isotopeContainer").hide();
         if(data == ""){
             alert("No albums found");
         }
@@ -126,12 +126,15 @@ function showPictures(data, albumName, albumID, page) {
     $("#content").html("<h1>"+albumName+"</hi>");
     $("#content").append("<div id ='isotopeContainer'></div>");
     $("#content").append("<nav><ul id = 'pageNavigation' class = 'pagination'></ul?</nav>");
-    $("#content").hide();
+    $("#isotopeContainer").hide();
     if(page == null) {
         var currentPage = 0;
     } else {
         var currentPage = parseInt(loadPictures.currentLoadedPage);
     }
+    /**
+        This section sets up loading the images to load
+    */
     if(page == null || page == 0){
         loadTo = 14;
         startFrom = 0;
@@ -238,7 +241,7 @@ function getCategories() {
 function initIsotope() {
     var $container = $('#isotopeContainer');
     $container.imagesLoaded( function() {
-      $container.isotope({
+      $container.fadeIn().isotope({
           itemSelector: '.isotopeElement',
           layoutMode: "fitRows"
       });
