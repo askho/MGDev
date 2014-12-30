@@ -106,6 +106,7 @@ figure figcaption {
 }
 .featherlight img{
     max-height:75vh;
+    max-width: 90vw;
     height: auto;
     position: static;
     top: 0; right: 0; bottom: 0; left: 0;

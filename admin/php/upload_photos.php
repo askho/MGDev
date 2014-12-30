@@ -92,15 +92,21 @@ if (!empty($_FILES)) {
     <?php
     //Flush the output stream
     echo str_repeat(' ',1024*64);
+    ini_set('memory_limit', '256M');
     //Fix json , decode and then proccess the images.
     $json = str_replace("\\r\\n", '', $_POST["jsonText"]);
     $json = json_decode($json);
-    $albumName = $_POST["albumName"];
-    if($_POST["albumNameDropDown"] != "null") {
+    if(isset($_POST["albumName"])) {
+        $albumName = $_POST["albumName"];
+    }
+    if(isset($_POST["albumNameDropDown"]) && $_POST["albumNameDropDown"] != "null") {
         $albumName = $_POST["albumNameDropDown"];
     }
-    $categoryName = $_POST["category"];
-    if($_POST["categoryDropDown"] != "null") {
+    if(isset($_POST["category"])) {
+        $categoryName = $_POST["category"];
+    }
+
+    if(isset($_POST["categoryDropDown"]) && $_POST["categoryDropDown"] != "null") {
         $categoryName = $_POST["categoryDropDown"];
     }
     processImages($json, $albumName, $categoryName);
@@ -129,9 +135,9 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     $query = "INSERT INTO photo (photoDate, dateTaken, aperture, ISO, focalLength, camera, location) VALUES";
     $last;
     $first = null;
-    $photoDest = "../../images/photos/"; //Change this if you want the destiation to be different. /
+    $photoDest = "images/photos/"; //Change this if you want the destiation to be different. /
     $fullHeight = 2048;
-    $thumbnailDest = "../../images/thumbnails/";
+    $thumbnailDest = "images/thumbnails/";
     $thumbHeight = 256;
     //Connect to the database!
         
@@ -142,7 +148,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     //Make thumbnails for each photo, then rip the EXIF data and insert it into the database
     foreach($arrayOfImages as $image) {
         set_time_limit(60);
-        $src = "../../images/fullPhotos/".$image;
+        $src = "/images/fullPhotos/".$image;
         if(makeImages($src, $photoDest, $fullHeight) !== true) {
             echo '<script>document.getElementById("warnings").innerHTML = "Failed to proccess'. $image . '<br />" 
                 + document.getElementById("warnings").innerHTML</script>';
@@ -309,52 +315,27 @@ function makeImages($src, $dest, $desired_height) {
     /* Get name of file  can set the destination inside of thumbnails*/
     $startAt = strrpos($src, "/");
     $finalDest = $dest . substr($src, ++$startAt);
-    /*
-    Getting the file type
-    */
-    $fileType = strrpos($src, ".");
-    $fileType = substr($src, $fileType);
-    if($fileType != ".jpg" && $fileType != ".png" && $fileType != ".gif" && $fileType != ".JPG" && $fileType != ".GIF" && $fileType != ".PNG") {
-        return -1;
+    try
+    {
+            $src = $_SERVER['DOCUMENT_ROOT'] . "/MGDev/" . $src;
+            $dest = $_SERVER['DOCUMENT_ROOT'] . "/MGDev/" . $finalDest;
+            $im = new Imagick();
+            $im->readImage( $src );
+            $im->setImageCompressionQuality(75);
+            $im->thumbnailImage( 0, $desired_height );
+            $im->setImageFileName($dest);
+
+            $im->writeImage();
+
+            $im->destroy();
+            return true;
+            
     }
-    /* read the source image */
-    if($fileType == ".jpg" || $fileType == ".JPG") {
-        if(!($source_image = imagecreatefromjpeg($src))) {
-            return -3;
-        }
-    } else if($fileType == ".png" || $fileType == ".PNG") {
-        if(!($source_image = imagecreatefrompng($src))) {
-            return -3;
-        }
-    } else if($fileType == ".gif" || $fileType == ".GIF") {
-        if(!($source_image = imagecreatefromgif($src))) {
-            return -3;
-        }
-    }
-    $width = imagesx($source_image);
-    $height = imagesy($source_image);
-
-    /* find the "desired height" of this thumbnail, relative to the desired width  */
-    $desired_width = floor($width * ($desired_height / $height));
-
-    /* create a new, "virtual" image */
-    $virtual_image = imagecreatetruecolor($desired_width, $desired_height);
-
-    /* copy source image at a resized size */
-    imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
-
-    /* create the physical thumbnail image to its destination */
-    if($fileType == ".jpg" || $fileType == ".JPG") {
-        if(!imagejpeg($virtual_image, $finalDest))
-            return -2;
-    } else if($fileType == ".png" || $fileType == ".PNG") {
-        if(!imagepng($virtual_image, $finalDest)) {
-            return -2;
-        }
-    } else if($fileType == ".gif" || $fileType == ".GIF") {
-        if(!imagegif($virtual_image, $finalDest)) {
-            return -2;
-        }
+    catch(Exception $e)
+    {
+            echo '<script>document.getElementById("warnings").innerHTML = " '.$e->getMessage(). '<br />" 
+                + document.getElementById("warnings").innerHTML</script>';
+            return $file;
     }
     return true;
 }
@@ -372,6 +353,7 @@ function makeImages($src, $dest, $desired_height) {
             model of camera
 */
 function readPhoto($src) {
+    $src = "../../" .$src;
     $exif = exif_read_data($src, "EXIF");
     $return = array( "name" =>  $exif['FileName']
                     ,"aperture" => $exif['COMPUTED']['ApertureFNumber']
