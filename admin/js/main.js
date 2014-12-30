@@ -198,7 +198,7 @@ function showPictures(data, albumName, albumID, page) {
     
 }
 /*
-    This grabs the categories to be shown.
+    This grabs the categories to be shown with a form for editing options.
 */
 function getCategories() {
     $.ajax({
@@ -209,10 +209,18 @@ function getCategories() {
         if(data == ""){
             alert("No categories found");
         } else {
-            $("#content").html("<div id = 'categories'><h1>Categories</hi></div>");
+            $("#content").html("<div id = 'editCategories'><h>Categories</h6></div>");
             for(i = 0; i < data.length; i++) {
                 var url = "viewAlbum.php?categoryID="+data[i]['categoryID'];
-                $("#categories").hide().append("<a href = '"+url+"' id ='"+data[i]['categoryID']+"'>yooo"+data[i]['categoryName']+"</a>").fadeIn("fast");
+                $("#editCategories").hide().append("<a href = '"+url+"' id ='"+data[i]['categoryID']+"'>"+data[i]['categoryName']+"</a>"
+                
+                /*"<form action='php/edit_category.php' method='post' id=form"+data[i]['categoryID']+" enctype='multipart/form-data'>"
+                                                   +"<h3>"+data[i]['categoryName']+"</h3>"
+                                                   +"<input type='submit' value='Delete' name='delete'>"
+                                                   +"<input type='text' name='new_name'>"
+                                                   +"<input type='submit' value='Rename' name='rename'>"
+                                                   +"<a href = '"+url+"' id ='"+data[i]['categoryID']+"'>view</a>"
+                                                   +"</form>"*/).fadeIn("fast");
                 (function(j) {
                     $("#"+data[j]['categoryID']).click(function(event) {
                         getAlbumThumbs(data[j]['categoryID']);
