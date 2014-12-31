@@ -10,7 +10,7 @@ require './php/logged_in.php';
         <br>
         <a href="upload.php">Upload Photos</a>
         <br>
-        <a href="edit_uploads.php">Edit Photos</a>
+        <a href="edit_categories.php">Edit Photos</a>
         <br>
         <a href="change_password.php">Change Password</a>
         <br />
