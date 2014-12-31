@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  	<title>Home</title>
+  	<title>Mike Gonzales - Blog</title>
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/style.css">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -39,9 +39,15 @@
     </div>
   </div>
 </nav>
-<div class = "content container-fluid" id = "content">
-
-
+<div class = "content container" id = "content">
+  <div class ="well">
+    <h1>Blog Manager</h1>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        Panel content
+      </div>
+      <div class="panel-footer">Panel footer</div>
+    </div>
 </div>
 <div id = "bottomRight">
 <address>

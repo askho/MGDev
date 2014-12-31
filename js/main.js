@@ -8,7 +8,7 @@ $( document ).ready(function() {
             event.preventDefault();
             getCategories();
         } else if($(event.target).is("#blog")) {
-            alert("Blog was pressed");
+            getBlogPosts();
         } else if($(event.target).is("#booking")) {
             alert("Booking was pressed");
         }
@@ -49,6 +49,28 @@ function getQueryVariable(variable)
                if(pair[0] == variable){return decodeURI(pair[1]);}
        }
        return(false);
+}
+function getBlogPosts() {
+    $.ajax({
+        url: "php/getBlogPosts.php",
+        dataType: "json",
+        type: "POST",
+    })
+    .done(function( data ) {
+        $("#content").html("<div class = 'well' id = 'blogContainer'></div>").hide();
+        if(data.length == 0) {
+            alert("No posts to be seen");
+        }
+        for(i = 0; i < data.length; i++) {
+            $("#blogContainer").append("<div class = 'panel panel-default' id ='blogHead"+i+"'></div>")
+            $("#blogHead"+i).append("<div class = 'panel-heading' id ='blogTitle'"+i+"><h1 class='panel-title'>"+data[i].title+"</h1><br /><h6>Posted on: "+data[i].date+"</h6></div><div class='panel-body'></div>");
+            $("#blogHead"+i).append("<div class = 'panel-body'>"+data[i].body + "</div>");
+        }
+        $("#content").fadeIn();
+    })
+    .fail(function() {
+        alert("Failed to blog posts");
+    });
 }
 /*
     This grabs the thumbnails for a category and places them inside content and inits isotope
@@ -99,7 +121,9 @@ function getAlbumThumbs(categoryID) {
         alert("Failed to get the albums");
     });
 }
-
+/*
+    This grabs the server results calls show pictures to display them.
+*/
 function loadPictures(albumID, albumName, pageNumber) {
     $.ajax({
         url: "php/getPhotos.php",
@@ -108,6 +132,7 @@ function loadPictures(albumID, albumName, pageNumber) {
         data:{album: albumID}
     })
     .done(function( data ) {
+        console.log(data);
         loadPictures.data = data;
         loadPictures.currentLoadedPage = 0;
     if(pageNumber != null || pageNumber == 0) {
@@ -122,11 +147,16 @@ function loadPictures(albumID, albumName, pageNumber) {
         alert("Failed to get the albums");
     });
 }
+/*
+    This displays the picture based on the json response. If no page is specified it will default to 
+    0
+*/
 function showPictures(data, albumName, albumID, page) {
     $("#content").html("<h1>"+albumName+"</hi>");
     $("#content").append("<div id ='isotopeContainer'></div>");
     $("#content").append("<nav><ul id = 'pageNavigation' class = 'pagination'></ul?</nav>");
     $("#isotopeContainer").hide();
+    $("#pageNavigation").hide();
     if(page == null) {
         var currentPage = 0;
     } else {
@@ -143,7 +173,7 @@ function showPictures(data, albumName, albumID, page) {
         }
         var page = 0;
     } else {
-        startFrom = page * 15;
+        startFrom = page * 14;
         loadTo = startFrom + 14;
         if (loadTo > data.length) {
             loadTo = data.length;
@@ -167,19 +197,24 @@ function showPictures(data, albumName, albumID, page) {
                                         </figure>");
         (function(j, object) {
             $("#"+j).click(function(event) {
+                dateTaken = (object.dateTaken == null)?  "Unknown": object.dateTaken;
+                iso = (object.ISO == null)? "Unknown" : object.ISO;
+                camera = (object.camera == null)? "Unknown" : object.camera;
+                focalLength = (object.focalLength == null)? "Unknown" : object.focalLength + " mm";
+                aperture = (object.aperture == null)? "Unknown" : object.aperture;
                 var image = "images/photos/"+object.location;
-                var caption = "<div class = 'caption'>Date Taken: " + object.dateTaken 
-                    + "<br />ISO: " + object.ISO 
-                    + "<br />Camera: " + object.camera
-                    + "<br />Focal Length: " + object.focalLength + "mm"
-                    +"<br />Aperture: " + object.aperture + "</div>";
+                var caption = "<div class = 'caption'>Date Taken: " + dateTaken 
+                    + "<br />ISO: " + iso 
+                    + "<br />Camera: " + camera
+                    + "<br />Focal Length: " + focalLength
+                    +"<br />Aperture: " + aperture + "</div>";
                 $.featherlight("<img class = 'lightboxImage' src = "+image+"><br />" + caption, {type: "html"});
                 event.preventDefault();
             });
         })(photoID, data[i])
     }
     var maxPage = 5 + currentPage;
-    var maxPossiblePages = data.length / 14;
+    var maxPossiblePages = Math.ceil((data.length / 14) + 1);
     for(i = currentPage - 3; i < maxPage && i < Math.floor(maxPossiblePages); i++) {
         var url = "viewPhotos.php?albumID=" + albumID +"&albumName="+albumName+"&pageNumber="+(i-1); 
         if(i > 0 ) {
@@ -236,7 +271,7 @@ function getCategories() {
     })
 }
 /*
-    This initalizes isotope
+    This initalizes isotope and fades in the content
 */
 function initIsotope() {
     var $container = $('#isotopeContainer');
@@ -245,6 +280,7 @@ function initIsotope() {
           itemSelector: '.isotopeElement',
           layoutMode: "fitRows"
       });
+        $("#pageNavigation").fadeIn();
     });
 
 }

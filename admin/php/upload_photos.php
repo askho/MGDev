@@ -128,6 +128,7 @@ error_reporting(0); //Turn off error reporting because we already deal with it m
         Array: Returns array of the file names of the failed images. (Could be used to delete them);
 */
 function processImages($arrayOfImages, $albumName, $categoryName) {
+    ini_set('memory_limit','128M');
     $return = true;
     $failedFiles = array();
     $count = 0;

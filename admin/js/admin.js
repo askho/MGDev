@@ -18,10 +18,33 @@ $( document ).ready(function() {
         initUploadScreen();
     })
     initUploadScreen();
+    CKEDITOR.replace( "postBody",{
+        height: "40vh"
+    });
+    $("#createNewPost").click(function(){$("#createPost").fadeIn();});
+    $("#createPostsButton").click(function() {
+        $.ajax({
+            url: "php/createPost.php"
+            ,type: "POST"
+            ,data: {postTitle : $("#postTitle").val()
+                ,postBody : CKEDITOR.instances['postBody'].getData()}
+        }).done(function(data){
+            if(data == "1") {
+                $("#notificationMessage").html("Post Created");
+                $('#notification2').modal('show');
+            } else {
+                $("#notificationMessage").html("Failed To create post");
+                $('#notification2').modal('show');
+            }
+            
+        });
+    });
+    $("#createPost").hide();
 });
 var fileNames = [];
 var JSONFileName;
-Dropzone.options.testZone = {
+function initDropZoneGallery() {
+    Dropzone.options.testZone = {
     init: function() {
         this.on("addedfile", function(file) {
             $("#previewWell").show(100);
@@ -54,9 +77,38 @@ Dropzone.options.testZone = {
     success: function(responseText) {
         fileNames.push(responseText.xhr.responseText);
     },
+};  
+}
+function initDropZoneBlog() {
+    Dropzone.options.blog = {
+    init: function() {
+        this.on("addedfile", function(file) {
+            $("#previewWell").show(100);
+        });
+        this.on("processing", function(file) {
+            $("#submit").prop('disabled', true);
+            $("#submit").addClass('btn-danger').removeClass('btn-success')
+            $("#submit").html("Waiting For Upload");
+        });
+        this.on("totaluploadprogress", function(progress) {
+            $("#progress").val(progress);
+        });
+    },
+    maxFiles: null,
+    maxFilesize: 50,
+    acceptedFiles: ".gif,.GIF,.png,.PNG,.jpg,.JPG,.jpeg,.JPEG",
+    parallelUploads: 20,
+    dictDefaultMessage: "custom message",
+    accept: function(file, done) {
+        done();
+    },
+    success: function(responseText) {
+        $("#imageLink").html(responseText.xhr.responseText);
+        $('#notification').modal('show');
+    },
+};  
+}
 
-
-};
 /**
 This function sets up the category, and album selector based on what is returned from categoryAlbumData.php
 */
