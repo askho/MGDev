@@ -215,7 +215,7 @@ function getCategories() {
             $("#content").html("<div id = 'categories'><h1>Categories</hi></div>");
             for(i = 0; i < data.length; i++) {
                 var url = "viewAlbum.php?categoryID="+data[i]['categoryID'];
-                $("#categories").hide().append("<a href = '"+url+"' id ='"+data[i]['categoryID']+"'>yooo"+data[i]['categoryName']+"</a>").fadeIn("fast");
+                $("#categories").hide().append("<a href = '"+url+"' id ='"+data[i]['categoryID']+"'>"+data[i]['categoryName']+"</a>").fadeIn("fast");
                 (function(j) {
                     $("#"+data[j]['categoryID']).click(function(event) {
                         getAlbumThumbs(data[j]['categoryID']);

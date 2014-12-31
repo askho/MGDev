@@ -2,11 +2,11 @@
 <html>
 <head>
     <title>Home</title>
-  <link rel="stylesheet" href="css/bootstrap.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/style.css">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <script src="js/isotope.js"></script>
+  <script src="../js/isotope.js"></script>
   <script src="js/main.js"></script>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,8 +33,8 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">
-        <img class = "hidden-xs" src = "images/style/logo.png" alt = "logo"/>
-        <img class = "visible-xs" src = "images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
+        <img class = "hidden-xs" src = "../images/style/logo.png" alt = "logo"/>
+        <img class = "visible-xs" src = "../images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
 
     </a>
     </div>

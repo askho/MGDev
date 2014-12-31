@@ -56,12 +56,13 @@ function getQueryVariable(variable)
 */
 function getAlbumThumbs(categoryID) {
     $.ajax({
-        url: "php/albumThumbnails.php",
+        url: "../php/albumThumbnails.php",
         dataType: "json",
         type: "POST",
         data:{category: categoryID}
     })
     .done(function( data ) {
+        alert("inside getalbumthumbs")
         $("#content").html("<h1>Albums</hi>");
         $("#content").append("<div id ='isotopeContainer'></div>");
         $("#content").hide();
@@ -69,7 +70,7 @@ function getAlbumThumbs(categoryID) {
             alert("No albums found");
         }
         for(i = 0; i < data.length; i++) {
-            var result = "images/thumbnails/"+data[i].FirstPhoto;
+            var result = "../images/thumbnails/"+data[i].FirstPhoto;
             var albumName = data[i].albumname;
             var albumID = data[i].albumID;
             var url = "viewPhotos.php?albumID="+albumID+"&albumName="+albumName;
@@ -95,7 +96,9 @@ function getAlbumThumbs(categoryID) {
             initIsotope();
         });
     })
-    .fail(function() {
+    .fail(function(data) {   
+        alert("inside fail");
+        alert(JSON.stringify(data));
         alert("Failed to get the albums");
     });
 }
@@ -211,7 +214,7 @@ function getCategories() {
         } else {
             $("#content").html("<div id = 'editCategories'><h>Categories</h6></div>");
             for(i = 0; i < data.length; i++) {
-                var url = "viewAlbum.php?categoryID="+data[i]['categoryID'];
+                var url = "editAlbum.php?categoryID="+data[i]['categoryID'];
                 $("#editCategories").hide().append("<form action='php/edit_category.php' method='post' id=form"+data[i]['categoryID']+" enctype='multipart/form-data'>"
                                                    +"<h3>"+data[i]['categoryName']+"</h3>"
                                                    +"<input type='submit' value='Delete' name='delete'>"
@@ -221,7 +224,6 @@ function getCategories() {
                                                    +"</form>").fadeIn("fast");
                 (function(j) {
                     $("#"+data[j]['categoryID']).click(function(event) {
-                        alert(data[j]['categoryID']);
                         getAlbumThumbs(data[j]['categoryID']);
                         var href = $(this).attr('href');
                         if(history.pushState) {
