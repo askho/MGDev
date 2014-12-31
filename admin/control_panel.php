@@ -13,5 +13,7 @@ require './php/logged_in.php';
         <a href="edit_uploads.php">Edit Photos</a>
         <br>
         <a href="change_password.php">Change Password</a>
+        <br />
+        <a href="editBlog.php">Edit Blog</a>
     </body>
 </html>

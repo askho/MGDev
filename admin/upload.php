@@ -22,7 +22,7 @@ require './php/logged_in.php';
         <link rel="stylesheet" href="../css/bootstrap.css">
         <link rel="stylesheet" href="../css/style.css">
         <script>
-
+        initDropZoneGallery();
         </script>
     </head>
     <body>

@@ -1,0 +1,1 @@
+Photos to be used in the blog will go in here!

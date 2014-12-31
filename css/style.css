@@ -119,6 +119,13 @@ figure figcaption {
 select:disabled {
     background: #dddddd;
 }
+.well h1 {
+	color: black;
+	line-height: 200%;
+}
+.well {
+	color: black;
+}
 /**
  * Featherlight – ultra slim jQuery lightbox
  * Version 1.0.3 - http://noelboss.github.io/featherlight/
