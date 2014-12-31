@@ -62,6 +62,7 @@ function getAlbumThumbs(categoryID) {
         data:{category: categoryID}
     })
     .done(function( data ) {
+        alert("inside getalbumthumbs")
         $("#content").html("<h1>Albums</hi>");
         $("#content").append("<div id ='isotopeContainer'></div>");
         $("#content").hide();
@@ -204,7 +205,7 @@ function showPictures(data, albumName, albumID, page) {
 */
 function getCategories() {
     $.ajax({
-        url: "php/getCategoriesAdmin.php",
+        url: "php/getCategories.php",
         dataType: "json"
     })
     .done(function( data ) {
