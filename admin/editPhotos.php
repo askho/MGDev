@@ -43,7 +43,7 @@
                 $("#moveSubmit").click(function(){choice = "MOVE";});
                 
                 $('#editForm').submit(function() {
-                    confirm(choice + " all selected photos?");
+                    return confirm(choice + " all selected photos?");
                 });
                 
                 $("#editOptions").click(function(event){
