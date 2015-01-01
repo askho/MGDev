@@ -123,14 +123,6 @@ echo "<script>$(document).ready(function() {
         <div class = "content container-fluid" id = "content">
 
         </div>
-        <div id = "bottomRight">
-            <address>
-                <strong>Mike Gonzales</strong><br />
-                (604) 111-1111<br />
-                <a href = "mailto:#">Mikegonzales@mail.com</a><br />
-            </address>
-        </div>
-
     </body>
 
 </html>
