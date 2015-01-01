@@ -1,5 +1,9 @@
 /* stuff sean's working on */
 
+.selectedPhoto {
+    opacity: 0.5;
+}
+
 /* end sean's stuff */
 
 html{

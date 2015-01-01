@@ -136,28 +136,32 @@ function showPictures(data, albumName, albumID, page) {
         }
         $("#isotopeContainer").append(" <figure class = 'isotopeElement'>\
 <a id = '"+photoID+"'href = ''>\
-<img src='"+thumbnail+"'>\
+<img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
 <figcaption>"+photoName+"</figcaption>\
 </a>\
 </figure>");
         (function(j, object) {
             var selected = false;
             $("#"+j).click(function(event) {
-                var image = "images/photos/"+object.location;
+                /*var image = "images/photos/"+object.location;
                 var caption = "<div class = 'caption'>Date Taken: " + object.dateTaken 
                 + "<br />ISO: " + object.ISO 
                 + "<br />Camera: " + object.camera
                 + "<br />Focal Length: " + object.focalLength + "mm"
-                +"<br />Aperture: " + object.aperture + "</div>";
+                +"<br />Aperture: " + object.aperture + "</div>";*/
                 if(selecting){
-                if(selected == false){
-                    selected = true;              
+                    $("#"+j+"Img").toggleClass("selectedPhoto");
+                    if(selected == false){
+                        selectedPhotos.push($("#"+j+"Img").prop('src'));
+                        selected = true;              
+                    } else {
+                        var index = selectedPhotos.indexOf($("#"+j+"Img").prop('src'));
+                        if (index > -1) {
+                            selectedPhotos.splice(index, 1);
+                        }
+                        selected = false;
+                    }
                 } else {
-                    selected = false;
-                }
-                alert(selected);
-                } else {
-                    alert("cannot make selections ");
                 }
                 event.preventDefault();
             });

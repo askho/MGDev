@@ -11,25 +11,41 @@
         
         
         
+        
+        
         <script>
             /*
             Initalizing handlers 
             */
             $( document ).ready(function() {
+                $("#deleteSubmit").click(function(){choice = "DELETE";});
+                $("#moveSubmit").click(function(){choice = "MOVE";});
+                
+                $('#editForm').submit(function() {
+                    confirm(choice + " all selected photos?");
+                });
+                
                 $("#editOptions").click(function(event){
                     if($(event.target).is("#confirmSelectionBtn")) {
+                                                
+                        // store selected photos in hidden field
+                        $('#selectedPhotosHidden').val(selectedPhotos);
                         if (selecting){
                             $("#confirmSelectionBtn").text("Unconfirm");
                             selecting = false;
                         } else {
                             $("#confirmSelectionBtn").text("Confirm Selection");
                             selecting = true;
-                        }
-                    }
+                        } 
+                    } 
                 });
             });
+            var choice = "";
+            var selectedPhotos = [];
             var selecting = true;
         </script>
+        
+        
         
         
         
@@ -85,10 +101,21 @@ echo "<script>$(document).ready(function() {
         
         
         
-        <div id = "editOptions">
-            <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
-        </div>
-                
+        
+        <!-- Edit Photos Options -->
+        <form id="editForm" action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
+            <div id = "editOptions">
+                <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
+                <input type='submit' id="deleteSubmit" value='Delete' name='delete'>
+        <input type='submit' id="moveSubmit" value='Move' name='move'>
+
+            </div>
+            <label>Selected photos<br>
+                <input type="text" name="selected_photos" id="selectedPhotosHidden">
+            </label>
+        </form>
+        <!-- End Edit Photo Options -->
+        
         
         
         
