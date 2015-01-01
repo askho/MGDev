@@ -138,6 +138,8 @@ function showPictures(data, albumName, albumID, page) {
 <form action='php/edit_photos.php' method='post' enctype='multipart/form-data'>\
 <input type='text' name='new_name'>\
 <input type='submit' value='Rename' name='rename'>\
+<br><input type='text' name='new_description'>\
+<input type='submit' value='changeDesc' name='changeDesc'>\
 </form>\
 <a id = '"+photoID+"'href = ''>\
 <img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
