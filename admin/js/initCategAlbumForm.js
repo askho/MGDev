@@ -1,5 +1,4 @@
 function initUploadScreen() {
-    alert("initing uploadscreen");
     $("#category").prop('disabled', false);
     $("#albumName").prop('disabled', false);
     $("#albumName").val("");

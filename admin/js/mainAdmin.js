@@ -40,7 +40,7 @@ function getAlbumThumbs(categoryID, categoryName) {
         data:{category: categoryID}
     })
     .done(function( data ) {
-        $("#content").html("<h1>Category Names</hi>");
+        $("#content").html("<h1>Albums</hi>");
         $("#content").append("<div id ='isotopeContainer'></div>");
         $("#content").hide();
         if(data == ""){

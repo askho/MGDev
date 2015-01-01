@@ -50,7 +50,7 @@
                     if($(event.target).is("#confirmSelectionBtn")) {
                                                 
                         // store selected photos in hidden field
-                        $('#selectedPhotosHidden').val(selectedPhotos);
+                        $('#selectedPhotosHidden').val(JSON.stringify(selectedPhotos));
                         if (selecting){
                             $("#confirmSelectionBtn").text("Unconfirm");
                             selecting = false;
