@@ -8,6 +8,8 @@ $( document ).ready(function() {
             event.preventDefault();
             getCategories();
         } else if($(event.target).is("#blog")) {
+            event.preventDefault();
+            history.pushState(null, null, "viewBlog.php")
             getBlogPosts();
         } else if($(event.target).is("#booking")) {
             alert("Booking was pressed");
@@ -27,6 +29,10 @@ $(window).on('popstate', function() {
         loadPictures(getQueryVariable("albumID"), getQueryVariable("albumName"));
     } else if(fileName == "viewCategories.php") {
         getCategories();
+    } else if(fileName == "viewBlog.php") {
+        getBlogPosts(getQueryVariable("page"));
+    } else if(fileName == "viewPost.php") {
+        getPost(getQueryVariable("postID"));
     }
     if(fileName == "viewPhotos.php") {
         if(!getQueryVariable("pageNumber")) {
@@ -50,26 +56,127 @@ function getQueryVariable(variable)
        }
        return(false);
 }
-function getBlogPosts() {
+/*
+    This grabs the post title, post date, and post id of all the blog posts.
+*/
+function getBlogPosts(pageNo) {
+    document.title = "Blog - Mike Gonzales Photography";
+    $("#content").fadeOut(function() {
+        $("#content").removeClass();
+        $("#content").addClass("container");
+    });
+    if(pageNo == null || pageNo == 0) {
+        pageNo = 1;
+    }
     $.ajax({
         url: "php/getBlogPosts.php",
         dataType: "json",
         type: "POST",
+        data:{page: pageNo}
     })
     .done(function( data ) {
-        $("#content").html("<div class = 'well' id = 'blogContainer'></div>").hide();
+        console.log(data);
+        $("#content").html("<div class = 'well' id = 'blogContainer'></div> ").hide();
         if(data.length == 0) {
             alert("No posts to be seen");
         }
-        for(i = 0; i < data.length; i++) {
-            $("#blogContainer").append("<div class = 'panel panel-default' id ='blogHead"+i+"'></div>")
-            $("#blogHead"+i).append("<div class = 'panel-heading' id ='blogTitle'"+i+"><h1 class='panel-title'>"+data[i].title+"</h1><br /><h6>Posted on: "+data[i].date+"</h6></div><div class='panel-body'></div>");
-            $("#blogHead"+i).append("<div class = 'panel-body'>"+data[i].body + "</div>");
+        for(i = 0; i < data["posts"].length; i++) {
+            $("#blogContainer").append("<a href = 'viewPost.php?postID="+data["posts"][i].postID+"' id = 'link"+data["posts"][i].postID+"'><div class = 'panel panel-default' id ='blogHead"+i+"'></div></a>")
+            $("#blogHead"+i).append("<div class = 'panel-heading' id ='blogTitle'"+i+"><h1 class='panel-title'>"+data["posts"][i].title+"</h1><br /><h6>Posted on: "+data["posts"][i].date+"</h6></div>");
+            (function(j){
+                $("#link"+data["posts"][j].postID).click(function(event){
+                    event.preventDefault();
+                    history.pushState(null, null, $(this).attr('href'));
+                    getPost(data["posts"][j].postID)
+                })
+            })(i);
         }
+        $("#blogContainer").append("<nav><ul id = 'pagination' class ='pagination'></ul></nav>");
+        createPagination(pageNo, data["totalPages"].totalPages, "pagination");
+        window.scrollTo(0, 0);
         $("#content").fadeIn();
     })
     .fail(function() {
         alert("Failed to blog posts");
+    });
+}
+function createPagination(currentPage, totalPages, idName) {
+    currentPage = parseInt(currentPage);
+    totalPages = parseInt(totalPages);
+    /*
+        This next section puts in the previous button if it is needed
+    */
+    if(currentPage > 1) {
+        $("#"+idName).append("<li><a href='viewBlog.php?page="+ (currentPage -1) +"' aria-label='Previous' id = 'paginationPrevious'><span aria-hidden='true'>&laquo;</span></a></li>");
+        $("#paginationPrevious").click(function(event) {
+            event.preventDefault();
+            history.pushState(null, null, $(this).attr('href'));
+            getBlogPosts(currentPage - 1);
+        });
+    }
+    /*
+        This part populates the pagination section
+    */
+    for(i = currentPage - 3; i <= currentPage + 3 && i <= totalPages; i++) {
+        if(i > 0) {
+            if(i == currentPage) {
+                $("#"+idName).append("<li class='active'><a href='viewBlog.php?page="+ i +"' id = 'pagination"+i+"'>"+i+"<span class='sr-only'>(current)</span></a></li>");
+            } else {
+                $("#"+idName).append("<li><a href='viewBlog.php?page="+ i +"' id = 'pagination"+i+"'>"+i+"</a></li>");
+            }
+            (function(j){
+                $("#pagination"+j).click(function(event) {
+                    event.preventDefault();
+                    history.pushState(null, null, $(this).attr('href'));
+                    getBlogPosts(j);
+                });
+            })(i);
+        }
+    }
+    if(currentPage < totalPages) {
+        $("#"+idName).append("<li><a href='viewBlog.php?page="+ (currentPage +1) +"' aria-label='Next' id = 'paginationNext'><span aria-hidden='true'>&raquo;</span></a></li>");
+        $("#paginationNext").click(function(event) {
+            event.preventDefault();
+            history.pushState(null, null, $(this).attr('href'));
+            getBlogPosts(currentPage + 1);
+            
+        });
+    }
+}
+/*
+    This grabs the post contents of a blog post.
+*/
+function getPost(postID) {
+    $("#content").fadeOut(function() {
+        $("#content").removeClass();
+        $("#content").addClass("container");
+    
+    $.ajax({
+        url: "php/getPost.php",
+        dataType: "json",
+        type: "POST",
+        data: {
+            postID2: postID
+        }
+    })
+    .done(function( data ) {
+        document.title = data[0].title;
+        $("#content").html(" <div class = 'well'>\
+                                <div class='panel panel-default'>\
+                                  <div class='panel-heading' id = 'blogHeading'></div>\
+                                  <div class='panel-body' id = 'blogBody'>\
+                                  </div>\
+                                </div>\
+                                <div id = 'comments'></div>\
+                              </div>")
+        $("#blogHeading").append("<h1>"+data[0].title+"</h1><br><h6>"+data[0].date+"</h6>");
+        $("#blogBody").append(data[0].body);
+        $("#comments").load("php/disqus.php");
+        $('#content').fadeIn();
+    })
+    .fail(function() {
+        alert("Failed to get post");
+    });
     });
 }
 /*
@@ -77,6 +184,8 @@ function getBlogPosts() {
     @param: categoryID This is the category that we are selecting
 */
 function getAlbumThumbs(categoryID) {
+    $("#content").removeClass();
+    $("#content").addClass("container-fluid");
     $.ajax({
         url: "php/albumThumbnails.php",
         dataType: "json",
@@ -125,6 +234,8 @@ function getAlbumThumbs(categoryID) {
     This grabs the server results calls show pictures to display them.
 */
 function loadPictures(albumID, albumName, pageNumber) {
+    $("#content").removeClass();
+    $("#content").addClass("container-fluid");
     $.ajax({
         url: "php/getPhotos.php",
         dataType: "json",
@@ -152,6 +263,8 @@ function loadPictures(albumID, albumName, pageNumber) {
     0
 */
 function showPictures(data, albumName, albumID, page) {
+    $("#content").removeClass();
+    $("#content").addClass("container-fluid");
     $("#content").html("<h1>"+albumName+"</hi>");
     $("#content").append("<div id ='isotopeContainer'></div>");
     $("#content").append("<nav><ul id = 'pageNavigation' class = 'pagination'></ul?</nav>");
@@ -239,6 +352,8 @@ function showPictures(data, albumName, albumID, page) {
     This grabs the categories to be shown.
 */
 function getCategories() {
+    $("#content").removeClass();
+    $("#content").addClass("container-fluid");
     $.ajax({
         url: "php/getCategories.php",
         dataType: "json"

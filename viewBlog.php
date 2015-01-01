@@ -10,6 +10,12 @@
 	<script src="js/main.js"></script>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <?php
+    $page = 0;
+    if(isset($_GET['page'])) 
+      $page = $_GET['page'];
+    echo "<script>getBlogPosts($page);</script>"
+  ?>
 </head>
 
 <body>
@@ -33,23 +39,15 @@
     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
         <li><a id = "gallery" href = "viewCategories.php">Gallery</a></li>
-        <li><a id = "blog" href = "#">Blog</a></li>
+        <li><a id = "blog" href = "viewBlog.php">Blog</a></li>
         <li><a id = "booking" href = "#">Booking</a></li>
       </ul>
     </div>
   </div>
 </nav>
 <div class = "content container" id = "content">
-  <div class ="well">
-    <h1>Blog Manager</h1>
-    <div class="panel panel-default">
-      <div class="panel-body">
-        Panel content
-      </div>
-      <div class="panel-footer">Panel footer</div>
-    </div>
 </div>
-<div id = "bottomRight">
+<div id = "bottomRight" class = "hidden-xs">
 <address>
 	<strong>Mike Gonzales</strong><br />
 	(604) 111-1111<br />

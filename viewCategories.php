@@ -12,7 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <?php
   /**
-    Calling the corresponding JS functino to build the page. 
+    Calling the corresponding JS function to build the page. 
   */
   echo "<script>$(document).ready(function() {
     getCategories();

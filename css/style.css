@@ -10,7 +10,7 @@ body {
 	background-size: cover;
 	min-height:100%;
 }
-.content {
+#content {
 	color: white;
 }
 #bottomRight {
@@ -125,6 +125,9 @@ select:disabled {
 }
 .well {
 	color: black;
+}
+.panel-heading h1{
+	line-height: 100%;
 }
 /**
  * Featherlight – ultra slim jQuery lightbox

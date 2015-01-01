@@ -78,11 +78,13 @@ require './php/logged_in.php';
   </div>
 </div>
 <div class = "content container" id = "content">
-  <div class ="well">
-    <h1>Blog Manager</h1>
-    <br>
-    <button type = "button" class ="btn btn-primary" id ="createNewPost">Create New Post</button>
-    <button type = "button" class ="btn btn-primary" id ="editOldPost">Edit Old Posts</button>
+  <div class ="well" id ="contentWell">
+    <div id = "blogMenu">
+	    <h1>Blog Manager</h1>
+	    <br>
+	    <button type = "button" class ="btn btn-primary" id ="createNewPost">Create New Post</button>
+	    <button type = "button" class ="btn btn-primary" id ="editOldPost">Edit Old Posts</button>
+    </div>
     <div id = "createPost">
       <br>
       <h2>Create Post</h2>
@@ -95,6 +97,34 @@ require './php/logged_in.php';
         </textarea>
         <br><br>
         <button type = "button" class ="btn btn-success" id = "createPostsButton">Create Post</button>
+      </form>
+      <h2>Drop Photos Here To Upload</h2>
+        <form action="php/blogPictureUpload.php" method="post" class="dropzone" id="blog" enctype= "multipart/form-data">
+      </form> 
+    </div>
+    <div id ="editPosts">
+    <br />
+    <h1>Your Old Posts</h1>
+      <table class="table table-striped" id = "postTable">
+        <tr>
+          <th>Post Title</th>
+          <th>Created On</th>
+          <th>Edit</th>
+        </tr>
+      </table>
+    </div>
+    <div id = "postEditor">
+      <br>
+      <h2>Create Post</h2>
+      <form action="php/editPost.php" method = "POST">
+        Post Title<br>
+        <input type="text" name="postTitle" placeholder = "Post Title" class = "form-control" id = "editPostTitle">
+        <br>
+        Post Contents<br>
+        <textarea name = "postBody" id = "editPostBody">
+        </textarea>
+        <br><br>
+        <button type = "button" class ="btn btn-success" id = "editPostButton">Create Post</button>
       </form>
       <h2>Drop Photos Here To Upload</h2>
         <form action="php/blogPictureUpload.php" method="post" class="dropzone" id="blog" enctype= "multipart/form-data">

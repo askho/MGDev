@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  	<title>Home</title>
-	<link rel="stylesheet" href="css/bootstrap.css">
-	<link rel="stylesheet" href="css/style.css">
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-	<script src="js/isotope.js"></script>
-	<script src="js/main.js"></script>
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="js/isotope.js"></script>
+  <script src="js/main.js"></script>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<?php
+  /**
+    Calling the corresponding JS functino to build the page. 
+  */
+  $postID = $_GET['postID'];
+  echo "<script>$(document).ready(function() {
+  getPost($postID);
+  });</script>";
+?>
 </head>
 
 <body>
@@ -24,10 +33,10 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">
-      	<img class = "hidden-xs" src = "images/style/logo.png" alt = "logo"/>
-      	<img class = "visible-xs" src = "images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
+        <img class = "hidden-xs" src = "images/style/logo.png" alt = "logo"/>
+        <img class = "visible-xs" src = "images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
 
-  	</a>
+    </a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
@@ -41,12 +50,13 @@
 </nav>
 <div class = "content container-fluid" id = "content">
 
+
 </div>
 <div id = "bottomRight">
 <address>
-	<strong>Mike Gonzales</strong><br />
-	(604) 111-1111<br />
-	<a href = "mailto:#">Mikegonzales@mail.com</a><br />
+  <strong>Mike Gonzales</strong><br />
+  (604) 111-1111<br />
+  <a href = "mailto:#">Mikegonzales@mail.com</a><br />
 </address>
 </div>
 

@@ -1,4 +1,7 @@
 $( document ).ready(function() {
+    $("#createPost").hide();
+    $("#postEditor").hide();
+    $("#editPosts").hide();
     $(".nav.navbar-nav.navbar-right").click(function(event){
         if($(event.target).is("#addPhotos")) {
             alert("add photos was pressed");
@@ -18,20 +21,39 @@ $( document ).ready(function() {
         initUploadScreen();
     })
     initUploadScreen();
+    
     CKEDITOR.replace( "postBody",{
-        height: "40vh"
+        height: "40vh",
+        removePlugins: 'sourcearea'
     });
-    $("#createNewPost").click(function(){$("#createPost").fadeIn();});
+    $("#createNewPost").click(function(){
+        $("#contentWell").children().fadeOut("fast", function(){
+            $("#blogMenu").fadeIn();
+            $("#createPost").fadeIn();
+            window.scrollTo(0,0);
+        });
+    });
+    $("#editOldPost").click(function() {
+        $("#contentWell").children().fadeOut("fast", function() {
+           window.scrollTo(0,0);
+            $("#blogMenu").fadeIn();
+            $("#editPosts").fadeIn();
+            initOldBlogPosts();
+        });
+    });
     $("#createPostsButton").click(function() {
+        
         $.ajax({
             url: "php/createPost.php"
             ,type: "POST"
             ,data: {postTitle : $("#postTitle").val()
-                ,postBody : CKEDITOR.instances['postBody'].getData()}
+            ,postBody : CKEDITOR.instances['postBody'].getData()}
         }).done(function(data){
             if(data == "1") {
                 $("#notificationMessage").html("Post Created");
                 $('#notification2').modal('show');
+                $("#postTitle").val("");
+                CKEDITOR.instances['postBody'].setData("");
             } else {
                 $("#notificationMessage").html("Failed To create post");
                 $('#notification2').modal('show');
@@ -39,76 +61,145 @@ $( document ).ready(function() {
             
         });
     });
-    $("#createPost").hide();
+    $("#editPostButton").click(function() {
+        $.ajax({
+            url: "php/editPost.php"
+            ,type: "POST"
+            ,data: {editTitle : $("#editPostTitle").val()
+                ,editBody : CKEDITOR.instances['editPostBody'].getData()
+                ,editPostID2: editOldBlog.postID}
+        }).done(function(data){
+            console.log(data);
+            if(data == "1") {
+                $("#notificationMessage").html("Post Modified");
+                $('#notification2').modal('show');
+                $("#postTitle").val("");
+                CKEDITOR.instances['editPostBody'].setData("");
+                $("#contentWell").children().fadeOut();
+                $("#blogMenu").fadeIn();
+            } else {
+                $("#notificationMessage").html("Failed To modify post");
+                $('#notification2').modal('show');
+            }
+            
+        });
+    });
 });
 var fileNames = [];
 var JSONFileName;
 function initDropZoneGallery() {
     Dropzone.options.testZone = {
-    init: function() {
-        this.on("addedfile", function(file) {
-            $("#previewWell").show(100);
-        });
-        this.on("processing", function(file) {
-            $("#submit").prop('disabled', true);
-            $("#submit").addClass('btn-danger').removeClass('btn-success')
-            $("#submit").html("Waiting For Upload");
-        });
-        this.on("totaluploadprogress", function(progress) {
-            $("#progress").val(progress);
-        });
-    },
-    maxFiles: null,
-    maxFilesize: 50,
-    acceptedFiles: ".gif,.GIF,.png,.PNG,.jpg,.JPG,.jpeg,.JPEG",
-    previewsContainer: "#previewArea",
-    parallelUploads: 20,
-    accept: function(file, done) {
-        done();
-    },
-    complete: function(file){
-        JSONFileName = JSON.stringify(fileNames);
-        document.getElementById('jsonField').value = JSONFileName;
-        $("#submit").prop('disabled', false);
-        $("#submit").removeClass('btn-danger').addClass('btn-success')
-        $("#submit").html("Continue");
-    }
-    ,
-    success: function(responseText) {
-        fileNames.push(responseText.xhr.responseText);
-    },
-};  
+        init: function() {
+            this.on("addedfile", function(file) {
+                $("#previewWell").show(100);
+            });
+            this.on("processing", function(file) {
+                $("#submit").prop('disabled', true);
+                $("#submit").addClass('btn-danger').removeClass('btn-success')
+                $("#submit").html("Waiting For Upload");
+            });
+            this.on("totaluploadprogress", function(progress) {
+                $("#progress").val(progress);
+            });
+        },
+        maxFiles: null,
+        maxFilesize: 50,
+        acceptedFiles: ".gif,.GIF,.png,.PNG,.jpg,.JPG,.jpeg,.JPEG",
+        previewsContainer: "#previewArea",
+        parallelUploads: 20,
+        accept: function(file, done) {
+            done();
+        },
+        complete: function(file){
+            JSONFileName = JSON.stringify(fileNames);
+            document.getElementById('jsonField').value = JSONFileName;
+            $("#submit").prop('disabled', false);
+            $("#submit").removeClass('btn-danger').addClass('btn-success')
+            $("#submit").html("Continue");
+        }
+        ,
+        success: function(responseText) {
+            fileNames.push(responseText.xhr.responseText);
+        },
+    };  
 }
 function initDropZoneBlog() {
     Dropzone.options.blog = {
-    init: function() {
-        this.on("addedfile", function(file) {
-            $("#previewWell").show(100);
-        });
-        this.on("processing", function(file) {
-            $("#submit").prop('disabled', true);
-            $("#submit").addClass('btn-danger').removeClass('btn-success')
-            $("#submit").html("Waiting For Upload");
-        });
-        this.on("totaluploadprogress", function(progress) {
-            $("#progress").val(progress);
-        });
-    },
-    maxFiles: null,
-    maxFilesize: 50,
-    acceptedFiles: ".gif,.GIF,.png,.PNG,.jpg,.JPG,.jpeg,.JPEG",
-    parallelUploads: 20,
-    dictDefaultMessage: "custom message",
-    accept: function(file, done) {
-        done();
-    },
-    success: function(responseText) {
-        $("#imageLink").html(responseText.xhr.responseText);
-        $('#notification').modal('show');
-    },
-};  
+        init: function() {
+            this.on("addedfile", function(file) {
+                $("#previewWell").show(100);
+            });
+            this.on("processing", function(file) {
+                $("#submit").prop('disabled', true);
+                $("#submit").addClass('btn-danger').removeClass('btn-success')
+                $("#submit").html("Waiting For Upload");
+            });
+            this.on("totaluploadprogress", function(progress) {
+                $("#progress").val(progress);
+            });
+        },
+        maxFiles: null,
+        maxFilesize: 50,
+        acceptedFiles: ".gif,.GIF,.png,.PNG,.jpg,.JPG,.jpeg,.JPEG",
+        parallelUploads: 20,
+        dictDefaultMessage: "custom message",
+        accept: function(file, done) {
+            done();
+        },
+        success: function(responseText) {
+            $("#imageLink").html(responseText.xhr.responseText);
+            $('#notification').modal('show');
+        },
+    };  
 }
+function editOldBlog(postID) {
+    $("#editPosts").fadeOut(function() {
+        window.scrollTo(0,0);
+    });
+    editOldBlog.postID = postID;
+    var body;
+    $.ajax({
+      url: "php/getPost.php",
+      dataType: "json",
+      type: "POST",
+      data : {
+        postID2 : postID
+      }
+    }).success(function( data ) {
+        $("#editPostTitle").val(data.blogData[0].title);
+        CKEDITOR.replace( "editPostBody",{
+            height: "40vh",
+            removePlugins: 'sourcearea'
+        });
+        CKEDITOR.instances['editPostBody'].setData(data.blogData[0].body);
+        $("#postEditor").fadeIn();
 
+    }) .fail(function() {
+        alert("failed to grab data");
+    });
+        
+}
+function initOldBlogPosts() {
+    $.ajax({
+      url: "php/getBlogData.php",
+      dataType: "json"
+    })
+      .success(function( data ) {
+        for(i = 0; i < data.blog.length; i++) {
+            /*
+                Creating a table row!
+            */
+            $("#postTable").append("<tr><td>"+data.blog[i].title+"</td><td>"+data.blog[i].date
+                +"</td><td><button type='button' id = 'editBlog"+data.blog[i].postID+"'class='btn btn-success'>Edit</button></td></tr>");
+            //Adding listeners to edit button
+            (function(j) {
+                $("#editBlog"+data.blog[j].postID).click(function(){
+                    editOldBlog(data.blog[j].postID);
+                });
+            })(i);
+        }
+      });
+}
 /**
 This function sets up the category, and album selector based on what is returned from categoryAlbumData.php
 */
