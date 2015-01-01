@@ -135,6 +135,10 @@ function showPictures(data, albumName, albumID, page) {
             photoName = "";
         }
         $("#isotopeContainer").append(" <figure class = 'isotopeElement'>\
+<form action='php/edit_photos.php' method='post' enctype='multipart/form-data'>\
+<input type='text' name='new_name'>\
+<input type='submit' value='Rename' name='rename'>\
+</form>\
 <a id = '"+photoID+"'href = ''>\
 <img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
 <figcaption>"+photoName+"</figcaption>\
