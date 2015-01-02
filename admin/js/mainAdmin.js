@@ -51,12 +51,16 @@ function getAlbumThumbs(categoryID, categoryName) {
             var albumName = data[i].albumname;
             var albumID = data[i].albumID;
             var url = "editPhotos.php?albumID="+albumID+"&albumName="+albumName;
-            $("#isotopeContainer").append("<form action='php/edit_album.php' method='post' id=form"+data[i]['categoryID']+" enctype='multipart/form-data'>"
-                                          +"<h3>"+ albumName +"</h3>"
-                                          +"<input type='submit' value='Delete' name='delete'>"
-                                          +"<input type='text' name='new_name'>"
-                                          +"<input type='submit' value='Rename' name='rename'>"
-                                          +"\<a href = '"+url+"''>view</a>"                                                                            +"</form>");
+            $("#isotopeContainer").append("<form action='php/edit_album.php' method='post' id='renameForm"+albumID+"' enctype='multipart/form-data'>\
+                                          <h3>"+ albumName +"</h3>\
+                                          <input type='text' name='new_name'>\
+                                          <input type='submit' value='Rename' name='rename'>\
+                                          <a href = '"+url+"''>view</a>\
+</form>\
+<form action='php/edit_album.php' method='post' id='deleteForm"+albumID+"' enctype='multipart/form-data'>\
+<input type='submit' value='Delete' name='delete'>\
+<input type='hidden' name='albumID' value='"+albumID+"'>\
+</form>");
             (function(albumID2, albumName2, href) {
                 $("#"+albumID2).click(function(event) {
                     loadPictures(albumID2, albumName2);
@@ -66,7 +70,9 @@ function getAlbumThumbs(categoryID, categoryName) {
                     }
                 });
             })(albumID, albumName, url)
-
+            $("#deleteForm"+albumID).submit(function(){
+                return confirm("Delete this album and all its contents?");
+            });
         }
 
         $("#content").fadeIn("fast", function() {
