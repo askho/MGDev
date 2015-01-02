@@ -71,7 +71,7 @@ function getAlbumThumbs(categoryID, categoryName) {
                 });
             })(albumID, albumName, url)
             $("#deleteForm"+albumID).submit(function(){
-                return confirm("Delete this album and all its contents?");
+                return confirm("Delete this album and all its photos?");
             });
         }
 
@@ -217,14 +217,18 @@ function getCategories() {
         } else {
             $("#content").html("<div id = 'editCategories'><h>Categories</h6></div>");
             for(i = 0; i < data.length; i++) {
-                var url = "editAlbums.php?categoryID="+data[i]['categoryID'];
-                $("#editCategories").hide().append("<form action='php/edit_category.php' method='post' id=form"+data[i]['categoryID']+" enctype='multipart/form-data'>"
-                                                   +"<h3>"+data[i]['categoryName']+"</h3>"
-                                                   +"<input type='submit' value='Delete' name='delete'>"
-                                                   +"<input type='text' name='new_name'>"
-                                                   +"<input type='submit' value='Rename' name='rename'>"
-                                                   +"<a href = '"+url+"' id ='"+data[i]['categoryID']+"'>view</a>"
-                                                   +"</form>").fadeIn("fast");
+                var catID = data[i]['categoryID'];
+                var url = "editAlbums.php?categoryID="+catID;
+                $("#editCategories").hide().append("<form action='php/edit_category.php' method='post' id='renameForm"+catID+"' enctype='multipart/form-data'>\
+<h3>"+data[i]['categoryName']+"</h3>\
+<input type='text' name='new_name'>\
+<input type='submit' value='Rename' name='rename'>\
+<a href = '"+url+"' id ='"+catID+"'>view</a>\
+</form>\
+<form action='php/edit_category.php' method='post' id='deleteForm"+catID+"' enctype='multipart/form-data'>\
+<input type='submit' value='Delete' name='delete'>\
+<input type='hidden' name='categoryID' value='"+catID+"'>\
+</form>").fadeIn("fast");
                 (function(j) {
                     $("#"+data[j]['categoryID']).click(function(event) {
                         getAlbumThumbs(data[j]['categoryID'],data[i]['categoryName']);
@@ -234,8 +238,10 @@ function getCategories() {
                             event.preventDefault();
                         }
                     });
+                    $("#deleteForm"+data[j]['categoryID']).submit(function(){
+                        return confirm("Delete this category and all its albums and photos?");
+                    });               
                 })(i)
-
             }
         }
     })
