@@ -211,11 +211,17 @@ function getCategories() {
         url: "php/getCategories.php",
         dataType: "json"
     })
-    .done(function( data ) {
+    .done(function( data ) {        
+        $("#content").html("<div id = 'editCategories'>\
+<h1>Edit Categories</h1>\
+</div>");
+        $("#editCategories").append("<form action='php/edit_category.php' method='post' id='createCategoryForm' enctype='multipart/form-data'>\
+<input type='text' name='new_category' required>\
+<input type='submit' value='Create New Category' name='create_category'>\
+</form>");
         if(data == ""){
             alert("No categories found");
         } else {
-            $("#content").html("<div id = 'editCategories'><h>Categories</h6></div>");
             for(i = 0; i < data.length; i++) {
                 var catID = data[i]['categoryID'];
                 var url = "editAlbums.php?categoryID="+catID;
