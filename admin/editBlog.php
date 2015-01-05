@@ -106,11 +106,7 @@ require './php/logged_in.php';
     <br />
     <h1>Your Old Posts</h1>
       <table class="table table-striped" id = "postTable">
-        <tr>
-          <th>Post Title</th>
-          <th>Created On</th>
-          <th>Edit</th>
-        </tr>
+
       </table>
     </div>
     <div id = "postEditor">

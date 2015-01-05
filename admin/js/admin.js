@@ -27,19 +27,17 @@ $( document ).ready(function() {
         removePlugins: 'sourcearea'
     });
     $("#createNewPost").click(function(){
-        $("#contentWell").children().fadeOut("fast", function(){
-            $("#blogMenu").fadeIn();
-            $("#createPost").fadeIn();
-            window.scrollTo(0,0);
-        });
+        $("#contentWell").children().fadeOut("fast");
+        $("#blogMenu").fadeIn();
+        $("#createPost").fadeIn();
+        window.scrollTo(0,0);
     });
     $("#editOldPost").click(function() {
-        $("#contentWell").children().fadeOut("fast", function() {
-           window.scrollTo(0,0);
-            $("#blogMenu").fadeIn();
-            $("#editPosts").fadeIn();
-            initOldBlogPosts();
-        });
+        initOldBlogPosts();
+        $("#contentWell").children().fadeOut("fast");
+        window.scrollTo(0,0);
+        $("#blogMenu").fadeIn();
+        $("#editPosts").fadeIn();
     });
     $("#createPostsButton").click(function() {
         
@@ -185,20 +183,48 @@ function initOldBlogPosts() {
       dataType: "json"
     })
       .success(function( data ) {
+        $("#postTable").html("<tr><th>Post Title</th><th>Created On</th><th>Edit</th></tr>")
         for(i = 0; i < data.blog.length; i++) {
-            /*
-                Creating a table row!
-            */
+            
             $("#postTable").append("<tr><td>"+data.blog[i].title+"</td><td>"+data.blog[i].date
-                +"</td><td><button type='button' id = 'editBlog"+data.blog[i].postID+"'class='btn btn-success'>Edit</button></td></tr>");
+                +"</td><td><button type='button' id = 'editBlog"+data.blog[i].postID+"'class='btn btn-success'>Edit</button> "
+                +"<button type ='button' id = 'deleteBlog"+data.blog[i].postID+"' class = 'btn btn-danger'>Delete</button></td></tr>");
             //Adding listeners to edit button
             (function(j) {
                 $("#editBlog"+data.blog[j].postID).click(function(){
                     editOldBlog(data.blog[j].postID);
                 });
+                $("#deleteBlog"+data.blog[j].postID).click(function() {
+                    deletePost(data.blog[j].postID);
+                    
+                });
             })(i);
         }
       });
+}
+function deletePost(postID) {
+    var body;
+    $.ajax({
+      url: "php/deletePost.php",
+      type: "POST",
+      data : {
+        postID2 : postID
+      }
+    }).success(function( data ) {
+        console.log(data);
+        if(data == "1") {
+            $("#notificationMessage").html("Deletion Successful");
+            $('#notification2').modal('show');
+        } else {
+            $("#notificationMessage").html("Failed to delete post");
+            $('#notification2').modal('show');
+        }
+
+    }) .fail(function() {
+        alert("failed to find post");
+    }). complete(function() {
+        initOldBlogPosts();
+    }); 
 }
 /**
 This function sets up the category, and album selector based on what is returned from categoryAlbumData.php
