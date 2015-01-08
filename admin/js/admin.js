@@ -32,6 +32,7 @@ $( document ).ready(function() {
             if(data == "1") {
                 $("#notificationMessage").html("Post Created");
                 $('#notification2').modal('show');
+                CKEDITOR.instances['postBody'].setData('');
             } else {
                 $("#notificationMessage").html("Failed To create post");
                 $('#notification2').modal('show');

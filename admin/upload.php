@@ -85,6 +85,16 @@ require './php/logged_in.php';
                     </select>
                     </label>
                 </div>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"> Watermark
+                    </label>
+                  </div>
+                    <div class="checkbox">
+                    <label>
+                      <input type="checkbox"> Private Album
+                    </label>
+                  </div>
                 <input type="hidden" name="jsonText" id="jsonField">
                 <button class="btn btn-danger" type="submit" disabled = "disabled" id = "submit">Waiting For Upload</button>
                 <button class="btn btn-info" type = "button" id = "reset">Reset Form</button>
