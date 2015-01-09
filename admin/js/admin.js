@@ -52,8 +52,12 @@ $( document ).ready(function() {
             if(data == "1") {
                 $("#notificationMessage").html("Post Created");
                 $('#notification2').modal('show');
+<<<<<<< HEAD
                 $("#postTitle").val("");
                 CKEDITOR.instances['postBody'].setData("");
+=======
+                CKEDITOR.instances['postBody'].setData('');
+>>>>>>> 1d54ffdef9fb3597afd8c29d4a272a84f328c29f
             } else {
                 $("#notificationMessage").html("Failed To create post");
                 $('#notification2').modal('show');
