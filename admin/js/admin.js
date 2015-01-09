@@ -53,11 +53,14 @@ $( document ).ready(function() {
                 $("#notificationMessage").html("Post Created");
                 $('#notification2').modal('show');
 <<<<<<< HEAD
+<<<<<<< HEAD
                 $("#postTitle").val("");
                 CKEDITOR.instances['postBody'].setData("");
 =======
                 CKEDITOR.instances['postBody'].setData('');
 >>>>>>> 1d54ffdef9fb3597afd8c29d4a272a84f328c29f
+=======
+>>>>>>> parent of 1d54ffd... Half finished
             } else {
                 $("#notificationMessage").html("Failed To create post");
                 $('#notification2').modal('show');

@@ -150,7 +150,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     foreach($arrayOfImages as $image) {
         set_time_limit(60);
         $src = "/images/fullPhotos/".$image;
-        if(makeImages($src, $photoDest, $fullHeight, false) !== true) {
+        if(makeImages($src, $photoDest, $fullHeight) !== true) {
             echo '<script>document.getElementById("warnings").innerHTML = "Failed to proccess'. $image . '<br />" 
                 + document.getElementById("warnings").innerHTML</script>';
             $return = false;
@@ -158,7 +158,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
             $sizeOfArray--;
             continue;
         }
-        makeImages($src, $thumbnailDest, $thumbHeight, true);
+        makeImages($src, $thumbnailDest, $thumbHeight);
         /*
             Checking file type we will only rip data if it is a jpeg. 
             Only jpeg holds metadata :(
@@ -208,7 +208,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     /*
         Say that we are done!
     */
-    //echo '<script language="javascript">window.location.replace("../upload.php");</script>';
+    echo '<script language="javascript">window.location.replace("../upload.php");</script>';
     mysqli_close($conn);
     if($return) {
         return $return;
@@ -312,7 +312,7 @@ function putIntoCategory($categoryName, $albumName){
         ,"../images/photos/3.jpg");
     makeImages($arrayOfImages, 1024, "../../images/photos/");
 */
-function makeImages($src, $dest, $desired_height, $isThumb) {
+function makeImages($src, $dest, $desired_height) {
     /* Get name of file  can set the destination inside of thumbnails*/
     $startAt = strrpos($src, "/");
     $finalDest = $dest . substr($src, ++$startAt);
@@ -322,25 +322,12 @@ function makeImages($src, $dest, $desired_height, $isThumb) {
             $dest = $_SERVER['DOCUMENT_ROOT'] . "/MGDev/" . $finalDest;
             $im = new Imagick();
             $im->readImage( $src );
-            $imageHeight = $im->getImageHeight();
-            $imageWidth = $im->getImageWidth();
             $im->setImageCompressionQuality(75);
             $im->thumbnailImage( 0, $desired_height );
-
             $im->setImageFileName($dest);
-            if($isThumb == false) {
-                $watermarkPath = $_SERVER['DOCUMENT_ROOT'] . "/MGDev/images/style/watermark.png"; 
-                $watermark = new Imagick();
-                $watermark->readImage($watermarkPath);
-                if($imageHeight > $imageWidth) {
-                    $watermark->scaleImage(0, $imageHeight/5);
-                } else {
-                    $watermark -> scaleImage($imageWidth/5, 0);
-                }
-                
-                $im->compositeImage($watermark, imagick::COMPOSITE_OVER, 0, 0);
-            }
+
             $im->writeImage();
+
             $im->destroy();
             return true;
             
