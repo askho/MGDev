@@ -1,5 +1,6 @@
 <?php 
 require './php/logged_in.php'; 
+require '../php/connection.php';
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +58,35 @@ require './php/logged_in.php';
 
 
     <div class = "container">
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="notification" aria-hidden="true" id = "notification">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Your private album link</h4>
+              </div>
+              <div class="modal-body">
+                <?php 
+                if(isset($_GET['privateLink']))
+                    $privateID = $_GET['privateLink'];
+                if(isset($_GET['albumId']))
+                    $id = $_GET['albumId'];
+                if(isset($_GET['albumName']))
+                    $albumName = $_GET['albumName'];
+                echo $_SERVER['SERVER_NAME']. $homeDir . "viewPrivate.php?albumID=$id&albumName=$albumName&privateLink=$privateID";
+                ?>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <?php 
+            if(isset($_GET['privateLink']) && isset($_GET['albumName']) && isset($_GET['albumId'])) {
+                echo '<script>$("#notification").modal()</script>';
+            }
+        ?>
         <div class = "well">
             <form action="php/upload_photos.php" method="post" class="dropzone" id="testZone" enctype= "multipart/form-data">
                 <div class = "form-group">
@@ -83,6 +113,16 @@ require './php/logged_in.php';
                     <select name="albumNameDropDown" id = "albumSelector">
                         <option value="null">Select An Option</option>
                     </select>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                      <input type="checkbox" name = "watermark"> Watermark Photos
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                      <input type="checkbox" name = "private" id = "privateAlbum"> Create Private Album
                     </label>
                 </div>
                 <input type="hidden" name="jsonText" id="jsonField">

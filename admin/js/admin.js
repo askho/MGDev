@@ -1,4 +1,12 @@
 $( document ).ready(function() {
+    $('#privateAlbum').change(function() {
+        if($(this).is(":checked")) {
+            $("#category").val("privatecategory")
+            $("#category").prop('disabled', true);
+            $("#categorySelector").html("<option value='null'>Select An Option</option>");
+            $("#categorySelector").prop('disabled', true);
+        }  
+    });
     $("#createPost").hide();
     $("#postEditor").hide();
     $("#editPosts").hide();

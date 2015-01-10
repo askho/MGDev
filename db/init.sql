@@ -5,7 +5,6 @@ CREATE TABLE Album (
 	,albumTag VARCHAR(1000)
 	,privateLink VARCHAR(255)
 	,CONSTRAINT pk_AlbumID PRIMARY KEY (albumID)
-	,CONSTRAINT UQ_albumName UNIQUE (albumName)
 );
 
 CREATE TABLE Photo (

@@ -33,6 +33,13 @@ $(window).on('popstate', function() {
         getBlogPosts(getQueryVariable("page"));
     } else if(fileName == "viewPost.php") {
         getPost(getQueryVariable("postID"));
+    } else if(fileName == "viewPrivate.php") {
+        if(!getQueryVariable("pageNumber")) {
+            var pageNumber = 0;
+        } else {
+            var pageNumber = getQueryVariable("pageNumber");
+        }
+        loadPictures(getQueryVariable("albumID"), getQueryVariable("albumName"), pageNumber, getQueryVariable("privateLink"));
     }
     if(fileName == "viewPhotos.php") {
         if(!getQueryVariable("pageNumber")) {
@@ -226,35 +233,53 @@ function getAlbumThumbs(categoryID) {
             initIsotope();
         });
     })
-    .fail(function() {
+    .fail(function(data) {
+        console.log(data);
         alert("Failed to get the albums");
     });
 }
 /*
     This grabs the server results calls show pictures to display them.
 */
-function loadPictures(albumID, albumName, pageNumber) {
+function loadPictures(albumID, albumName, pageNumber,  privateID) {
     $("#content").removeClass();
     $("#content").addClass("container-fluid");
+    if(privateID == "") {
+        privateID = null;
+    }
     $.ajax({
         url: "php/getPhotos.php",
         dataType: "json",
         type: "POST",
-        data:{album: albumID}
+        data:{album: albumID,
+            privateLink: privateID
+        }
     })
     .done(function( data ) {
         console.log(data);
         loadPictures.data = data;
         loadPictures.currentLoadedPage = 0;
-    if(pageNumber != null || pageNumber == 0) {
-        loadPictures.currentLoadedPage = pageNumber;
-        showPictures(loadPictures.data, albumName, albumID, pageNumber);
-    } else {
+        if(privateID == null) {
+            if(pageNumber != null || pageNumber == 0) {
+                loadPictures.currentLoadedPage = pageNumber;
+                showPictures(loadPictures.data, albumName, albumID, pageNumber);
+            } else {
 
-        showPictures(loadPictures.data, albumName, albumID);
-    }
+                showPictures(loadPictures.data, albumName, albumID);
+            }
+        } else {
+            if(pageNumber != null || pageNumber == 0) {
+                loadPictures.currentLoadedPage = pageNumber;
+                showPrivatePhotos(loadPictures.data, albumName, albumID, pageNumber, privateID);
+            } else {
+
+                showPrivatePhotos(loadPictures.data, albumName, albumID, 0, privateID);
+            }
+        }
+
     })
-    .fail(function() {
+    .fail(function(data) {
+        console.log(data);
         alert("Failed to get the albums");
     });
 }
@@ -345,8 +370,90 @@ function showPictures(data, albumName, albumID, page) {
         }
     }
     $("#content").fadeIn("fast",function() {initIsotope()});
-    
-    
+}
+function showPrivatePhotos(data, albumName, albumID, page, private) {
+    $("#content").removeClass();
+    $("#content").addClass("container-fluid");
+    $("#content").html("<h1>"+albumName+"</hi>");
+    $("#content").append("<div id ='isotopeContainer'></div>");
+    $("#content").append("<nav><ul id = 'pageNavigation' class = 'pagination'></ul?</nav>");
+    $("#isotopeContainer").hide();
+    $("#pageNavigation").hide();
+    if(page == null) {
+        var currentPage = 0;
+    } else {
+        var currentPage = parseInt(loadPictures.currentLoadedPage);
+    }
+    /**
+        This section sets up loading the images to load
+    */
+    if(page == null || page == 0){
+        loadTo = 14;
+        startFrom = 0;
+        if (loadTo > data.length) {
+            loadTo = data.length;
+        }
+        var page = 0;
+    } else {
+        startFrom = page * 14;
+        loadTo = startFrom + 14;
+        if (loadTo > data.length) {
+            loadTo = data.length;
+        }
+    }
+    if(data == ""){ 
+        alert("No albums found");
+    }
+    for(i = startFrom; i < loadTo; i++) {
+        var thumbnail = "images/thumbnails/"+data[i].location;
+        var photoName = data[i].photoName;
+        var photoID = data[i].photoID;
+        if(photoName == null) {
+            photoName = "";
+        }
+        $("#isotopeContainer").append(" <figure class = 'isotopeElement'>\
+                                            <a id = '"+photoID+"'href = ''>\
+                                            <img src='"+thumbnail+"'>\
+                                            <figcaption>"+photoName+"</figcaption>\
+                                            </a>\
+                                        </figure>");
+        (function(j, object) {
+            $("#"+j).click(function(event) {
+                dateTaken = (object.dateTaken == null)?  "Unknown": object.dateTaken;
+                iso = (object.ISO == null)? "Unknown" : object.ISO;
+                camera = (object.camera == null)? "Unknown" : object.camera;
+                focalLength = (object.focalLength == null)? "Unknown" : object.focalLength + " mm";
+                aperture = (object.aperture == null)? "Unknown" : object.aperture;
+                var image = "images/photos/"+object.location;
+                var caption = "<div class = 'caption'>Date Taken: " + dateTaken 
+                    + "<br />ISO: " + iso 
+                    + "<br />Camera: " + camera
+                    + "<br />Focal Length: " + focalLength
+                    +"<br />Aperture: " + aperture + "</div>";
+                $.featherlight("<img class = 'lightboxImage' src = "+image+"><br />" + caption, {type: "html"});
+                event.preventDefault();
+            });
+        })(photoID, data[i])
+    }
+    var maxPage = 5 + currentPage;
+    var maxPossiblePages = Math.ceil((data.length / 14) + 1);
+    for(i = currentPage - 3; i < maxPage && i < Math.floor(maxPossiblePages); i++) {
+        var url = "viewPrivate.php?albumID=" + albumID +"&albumName="+albumName+"&pageNumber="+(i-1)+"&privateLink="+private; 
+        if(i > 0 ) {
+            $("#pageNavigation").append("<li id='navContainer"+i+"'><a id = 'nav"+i+"' href='"+url+"'>"+i+"</a></li>");
+            (function(j, href) {
+                $("#nav"+i).click(function(event){
+                    loadPictures(albumID, albumName, j-1, private);
+                    history.pushState(null, null, href);
+                    event.preventDefault();
+                });
+            })(i, url);
+        }
+        if(i == (currentPage + 1)) {
+            $("#navContainer"+i).addClass("active");
+        }
+    }
+    $("#content").fadeIn("fast",function() {initIsotope()});
 }
 /*
     This grabs the categories to be shown.

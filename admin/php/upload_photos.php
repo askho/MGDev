@@ -91,7 +91,8 @@ if (!empty($_FILES)) {
     </html>
     <?php
     //Flush the output stream
-    echo str_repeat(' ',1024*64);
+    ob_flush(); 
+    flush();
     ini_set('memory_limit', '256M');
     //Fix json , decode and then proccess the images.
     $json = str_replace("\\r\\n", '', $_POST["jsonText"]);
@@ -105,9 +106,11 @@ if (!empty($_FILES)) {
     if(isset($_POST["category"])) {
         $categoryName = $_POST["category"];
     }
-
     if(isset($_POST["categoryDropDown"]) && $_POST["categoryDropDown"] != "null") {
         $categoryName = $_POST["categoryDropDown"];
+    }
+    if(!isset($_POST["category"]) && !isset($_POST['categoryDropDown'])) {
+        $categoryName = "privatecategory";
     }
     processImages($json, $albumName, $categoryName);
 }
@@ -140,9 +143,13 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     $fullHeight = 2048;
     $thumbnailDest = "images/thumbnails/";
     $thumbHeight = 256;
+    $watermarkPhoto = isset($_POST['watermark']);
+    $privateID;
+
     //Connect to the database!
         
     global $conn;
+    global $homeDir;
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
@@ -150,7 +157,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     foreach($arrayOfImages as $image) {
         set_time_limit(60);
         $src = "/images/fullPhotos/".$image;
-        if(makeImages($src, $photoDest, $fullHeight) !== true) {
+        if(makeImages($src, $photoDest, $fullHeight, $watermarkPhoto) !== true) {
             echo '<script>document.getElementById("warnings").innerHTML = "Failed to proccess'. $image . '<br />" 
                 + document.getElementById("warnings").innerHTML</script>';
             $return = false;
@@ -158,7 +165,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
             $sizeOfArray--;
             continue;
         }
-        makeImages($src, $thumbnailDest, $thumbHeight);
+        makeImages($src, $thumbnailDest, $thumbHeight, false);
         /*
             Checking file type we will only rip data if it is a jpeg. 
             Only jpeg holds metadata :(
@@ -193,7 +200,7 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
             document.getElementById("information").innerHTML="'.$image.' processed.<br />" + document.getElementById("information").innerHTML;
             $("#percentDone").html("'.floor($percent * 100) .' %");
             </script>';
-        echo str_repeat(' ',1024*64);
+        ob_flush(); 
         flush();
     }
     $query = substr($query,0,strlen($query)-2); //We need to trim off the extra comma that we put in.
@@ -203,12 +210,15 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
     if (!mysqli_query($conn, $query)) {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);
     }
-    putIntoAlbum($first, $last, $albumName, sizeof($arrayOfImages));
+    $id = putIntoAlbum($first, $last, $albumName, sizeof($arrayOfImages), $privateID);
     putIntoCategory($categoryName, $albumName);
     /*
-        Say that we are done!
+        Return to the previous page
     */
-    echo '<script language="javascript">window.location.replace("../upload.php");</script>';
+    if($privateID == null)
+        echo '<script language="javascript">window.location.replace("../upload.php");</script>';
+    else 
+        echo '<script language="javascript">window.location.replace("../upload.php?privateLink='.$privateID.'&albumName='.$albumName.'&albumId='.$id.'");</script>';
     mysqli_close($conn);
     if($return) {
         return $return;
@@ -228,17 +238,32 @@ function processImages($arrayOfImages, $albumName, $categoryName) {
         -1 = Sql failure
         true = everything good
 */
-function putIntoAlbum($start, $end, $albumName, $length) {
+function putIntoAlbum($start, $end, $albumName, $length, &$privateID) {
     global $conn;
     $id;
-    $query = "SELECT albumID FROM album WHERE albumName = '$albumName'";
-    $result = mysqli_query($conn, $query);
-    if (mysqli_num_rows($result) == 0) {
-        $query = "INSERT INTO album (albumName, albumDate) VALUES ('$albumName', CURDATE())";
-        $result = mysqli_query($conn, $query);
+    $privateID = null;
+    if(isset($_POST['private'])) {
+        $privateID = uniqid();
+    }
+    if($privateID != null) {
+        $query = "INSERT INTO album (albumName, albumDate, privateLink) VALUES ('$albumName', CURDATE(), '$privateID')";
+        if (!mysqli_query($conn, $query)) {
+            echo "Error: " . $query . "<br>" . mysqli_error($conn);
+            return -1;
+        }
         $query = "SELECT albumID FROM album WHERE albumName = '$albumName'";
         $result = mysqli_query($conn, $query);
-    } 
+    } else {
+        $query = "SELECT albumID FROM album WHERE albumName = '$albumName' AND (privateLink IS NULL OR privateLink = '')";
+        $result = mysqli_query($conn, $query);
+        if (mysqli_num_rows($result) == 0) {
+            $query = "INSERT INTO album (albumName, albumDate, privateLink) VALUES ('$albumName', CURDATE(), '$privateID')";
+            $result = mysqli_query($conn, $query);
+            $query = "SELECT albumID FROM album WHERE albumName = '$albumName'";
+            $result = mysqli_query($conn, $query);
+        } 
+    }
+
     while($row = mysqli_fetch_assoc($result)) {
         $id = $row["albumID"];
     }
@@ -249,7 +274,7 @@ function putIntoAlbum($start, $end, $albumName, $length) {
     WHERE photoID >= (SELECT photoID FROM photo WHERE location = '$start')
     AND photoID <= (SELECT photoID FROM photo WHERE location = '$end')";
     if($length == 1) {
-        $query = "
+    $query = "
     INSERT INTO photoalbum (photoID, albumID) 
     SELECT photoID, '$id'
     FROM photo
@@ -258,11 +283,16 @@ function putIntoAlbum($start, $end, $albumName, $length) {
     if (!mysqli_query($conn, $query)) {
             echo "Error: " . $query . "<br>" . mysqli_error($conn);
             return -1;
-    } 
-    return true;
+    }
+    $query = "SELECT albumID FROM album WHERE privateLink = '$privateID'";
+    $result = mysqli_query($conn, $query);
+    while($row = mysqli_fetch_assoc($result)) {
+        $id = $row["albumID"];
+    }
+    return $id;
 }
 /**
-        Puts the album into the right category
+    Puts the album into the right category
 
 */
 function putIntoCategory($categoryName, $albumName){
@@ -280,7 +310,7 @@ function putIntoCategory($categoryName, $albumName){
     while($row = mysqli_fetch_assoc($result)) {
         $catID = $row["categoryID"];
     }
-    $query = "SELECT albumID FROM album WHERE albumName = '$albumName'";
+    $query = "SELECT albumID FROM album WHERE albumName = '$albumName' AND privateLink IS NULL OR privateLink = ''";
     $result = mysqli_query($conn, $query);
     while($row = mysqli_fetch_assoc($result)) {
         $albumID = $row["albumID"];
@@ -312,7 +342,7 @@ function putIntoCategory($categoryName, $albumName){
         ,"../images/photos/3.jpg");
     makeImages($arrayOfImages, 1024, "../../images/photos/");
 */
-function makeImages($src, $dest, $desired_height) {
+function makeImages($src, $dest, $desired_height, $watermark) {
     /* Get name of file  can set the destination inside of thumbnails*/
     $startAt = strrpos($src, "/");
     $finalDest = $dest . substr($src, ++$startAt);
@@ -325,7 +355,19 @@ function makeImages($src, $dest, $desired_height) {
             $im->setImageCompressionQuality(75);
             $im->thumbnailImage( 0, $desired_height );
             $im->setImageFileName($dest);
-
+            if($watermark == true) {
+                $imageHeight = $im->getImageHeight();
+                $imageWidth = $im->getImageWidth();
+                $watermark = new Imagick();
+                $watermarkSrc = $_SERVER['DOCUMENT_ROOT']."/MGdev/images/style/watermark.png";
+                $watermark->readImage($watermarkSrc);
+                $watermark->thumbnailImage(0, $imageHeight / 10);
+                $watermarkHeight = $watermark->getImageHeight();
+                $watermarkWidth = $watermark->getImageWidth();
+                $left = ($imageWidth - $watermarkWidth);
+                $top = $imageHeight - $watermarkHeight;
+                $im-> compositeImage($watermark, imagick::COMPOSITE_OVER, $left, $top);
+            }
             $im->writeImage();
 
             $im->destroy();
@@ -336,7 +378,7 @@ function makeImages($src, $dest, $desired_height) {
     {
             echo '<script>document.getElementById("warnings").innerHTML = " '.$e->getMessage(). '<br />" 
                 + document.getElementById("warnings").innerHTML</script>';
-            return $file;
+            return false;
     }
     return true;
 }
