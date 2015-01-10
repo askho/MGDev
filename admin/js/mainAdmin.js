@@ -42,11 +42,20 @@ function getAlbumThumbs(categoryID, categoryName) {
     .done(function( data ) {
         $("#content").html("<h1>Albums</hi>");
         $("#content").append("<div id ='isotopeContainer'></div>");
+        $("#isotopeContainer").append("<form action='php/edit_album.php' method='post' id='createAlbumForm' enctype='multipart/form-data'>\
+<input type='text' name='new_album' required>\
+<input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\
+<input type='submit' value='Create New Album' name='create_album'>\
+</form>");
         $("#content").hide();
+        alert(data.length);
         if(data == ""){
             alert("No albums found");
+        } else {
+            alert(data);
         }
         for(i = 0; i < data.length; i++) {
+            alert("in get album thumbs");
             var result = "../images/thumbnails/"+data[i].FirstPhoto;
             var albumName = data[i].albumname;
             var albumID = data[i].albumID;

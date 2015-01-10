@@ -5,17 +5,8 @@
 	}
 	$output = array();
 	$categoryID = $_POST['category'];
-	$sql = "
-	SELECT MIN(location) AS FirstPhoto,
-       albumname, albumID 
-	FROM   photo 
-	       natural JOIN photoalbum 
-	       natural JOIN album 
-	WHERE  albumid IN (SELECT albumid 
-	                   FROM   album 
-	                          natural JOIN albumcategory 
-	                   WHERE  categoryID = '$categoryID') 
-	GROUP BY albumid";
+$sql = "SELECT * FROM album NATURAL JOIN albumcategory WHERE categoryid = ".$categoryID."
+";
 	$result = mysqli_query($conn, $sql);
 	while($rows = mysqli_fetch_assoc($result)) {
 		$output[] = $rows;
