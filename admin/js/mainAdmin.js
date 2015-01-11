@@ -33,11 +33,12 @@ function getQueryVariable(variable)
     @param: categoryID This is the category that we are selecting
 */
 function getAlbumThumbs(categoryID, categoryName) {
+    console.log("calling album thumbs");
     $.ajax({
-        url: "../php/albumThumbnails.php",
+        url: "./php/viewAlbum.php",
         dataType: "json",
         type: "POST",
-        data:{category: categoryID}
+        data:{categoryName: categoryName}
     })
     .done(function( data ) {
         $("#content").html("<h1>Albums</hi>");
@@ -48,21 +49,20 @@ function getAlbumThumbs(categoryID, categoryName) {
 <input type='submit' value='Create New Album' name='create_album'>\
 </form>");
         $("#content").hide();
-        alert(data.length);
         if(data == ""){
             alert("No albums found");
-        } else {
-            alert(data);
         }
         for(i = 0; i < data.length; i++) {
-            alert("in get album thumbs");
             var result = "../images/thumbnails/"+data[i].FirstPhoto;
-            var albumName = data[i].albumname;
+            var albumName = data[i].albumName;
             var albumID = data[i].albumID;
             var url = "editPhotos.php?albumID="+albumID+"&albumName="+albumName;
             $("#isotopeContainer").append("<form action='php/edit_album.php' method='post' id='renameForm"+albumID+"' enctype='multipart/form-data'>\
                                           <h3>"+ albumName +"</h3>\
                                           <input type='text' name='new_name'>\
+<input type='hidden' name='original_album_name' value='"+albumName+"'>\
+<input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\
+<input type='hidden' name='albumID' value='"+albumID+"'>\
                                           <input type='submit' value='Rename' name='rename'>\
                                           <a href = '"+url+"''>view</a>\
 </form>\
@@ -89,7 +89,8 @@ function getAlbumThumbs(categoryID, categoryName) {
         });
     })
     .fail(function(data) {   
-        alert("Failed to get the albums");
+        //alert("Failed to get the albums");
+        console.log(data());
     });
 }
 
@@ -116,7 +117,7 @@ function loadPictures(albumID, albumName, pageNumber) {
     });
 }
 function showPictures(data, albumName, albumID, page) {
-    $("#content").html("<h1>"+albumName+"</hi>");
+    $("#content").append("<h1>"+albumName+"</hi>");
     $("#content").append("<div id ='isotopeContainer'></div>");
     $("#content").append("<nav><ul id = 'pageNavigation' class = 'pagination'></ul?</nav>");
     $("#content").hide();
@@ -153,8 +154,13 @@ function showPictures(data, albumName, albumID, page) {
 <form action='php/edit_photos.php' method='post' enctype='multipart/form-data'>\
 <input type='text' name='new_name'>\
 <input type='submit' value='Rename' name='rename'>\
+<input type='hidden' name='photoID' value='"+photoID+"'>\
+<input type='hidden' name='albumID' value='"+albumID+"'>\
+<input type='hidden' name='albumName' value='"+albumName+"'>\
 <br><input type='text' name='new_description'>\
 <input type='submit' value='changeDesc' name='changeDesc'>\
+<br><label>DateTaken:<br>\
+                                      <input name='date_taken' class='datepicker'></label>\
 </form>\
 <a id = '"+photoID+"'href = ''>\
 <img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
@@ -209,8 +215,9 @@ function showPictures(data, albumName, albumID, page) {
     }
     */
     $("#content").fadeIn("fast",function() {initIsotope()});
-
-
+    $(".datepicker").each(function(){
+        $(this).datepicker();
+    });
 }
 /*
     This grabs the categories to be shown with a form for editing options.
@@ -238,6 +245,7 @@ function getCategories() {
 <h3>"+data[i]['categoryName']+"</h3>\
 <input type='text' name='new_name'>\
 <input type='submit' value='Rename' name='rename'>\
+<input type='hidden' name='original_category_name' value='"+data[i]['categoryName']+"'>\
 <a href = '"+url+"' id ='"+catID+"'>view</a>\
 </form>\
 <form action='php/edit_category.php' method='post' id='deleteForm"+catID+"' enctype='multipart/form-data'>\

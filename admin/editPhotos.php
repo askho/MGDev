@@ -8,11 +8,13 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script src="../js/isotope.js"></script>
         <script src="js/mainAdmin.js"></script>
-        
-        
-        
-        
-        
+
+        <!-- datepicker -->
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+        <!-- end datepickker -->
+
+
         <script>
             /*
             Initalizing handlers 
@@ -37,18 +39,20 @@
         initUploadScreen();
     })*/
                 initUploadScreen();
-                
-                
+                // 
+                $("#currentAlbumIDHidden").val(getUrlParameter('albumID'));
+                $("#currentAlbumNameHidden").val(getUrlParameter('albumName'));
+
                 $("#deleteSubmit").click(function(){choice = "DELETE";});
                 $("#moveSubmit").click(function(){choice = "MOVE";});
-                
+
                 $('#editForm').submit(function() {
                     return confirm(choice + " all selected photos?");
                 });
-                
+
                 $("#editOptions").click(function(event){
                     if($(event.target).is("#confirmSelectionBtn")) {
-                                                
+
                         // store selected photos in hidden field
                         $('#selectedPhotosHidden').val(JSON.stringify(selectedPhotos));
                         if (selecting){
@@ -64,13 +68,27 @@
             var choice = "";
             var selectedPhotos = [];
             var selecting = true;
+
+            function getUrlParameter(sParam)
+            {
+                var sPageURL = window.location.search.substring(1);
+                var sURLVariables = sPageURL.split('&');
+                for (var i = 0; i < sURLVariables.length; i++) 
+                {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam) 
+                    {
+                        return sParameterName[1];
+                    }
+                }
+            }     
         </script>
-        
+
         <script src="js/initCategAlbumForm.js"></script>
 
-        
-        
-        
+
+
+
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?php
@@ -118,59 +136,61 @@ echo "<script>$(document).ready(function() {
                 </div>
             </div>
         </nav>    
-        
-        
-        
-        
-        
-        
-        <!-- Edit Photos Options -->
-        <form id="editForm" action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
-            <div id = "editOptions">
-                <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
-                
-                <div class = "form-group">
-                    <label>New Category:<br>
-                        <input type="text" name="category" id = "category">
-                    </label>
-                </div>
-                <div class = "form-group">
-                    <label>
-                        Choose Category: <br />
-                        <select name="categoryDropDown" id = "categorySelector">
-                            <option value="null">Select An Option</option>
-                        </select>
-                    </label>
-                </div>
-                <div class = "form-group">
-                    <label>New Album:<br>
-                        <input type="text" name="albumName" id = "albumName">
-                    </label>
-                </div>
-                <div class = "form-group">
-                    <label>
-                        Choose Album: <br />
-                        <select name="albumNameDropDown" id = "albumSelector">
-                            <option value="null">Select An Option</option>
-                        </select>
-                    </label>
-                </div>
-                
-                <input type='submit' id="deleteSubmit" value='Delete' name='delete'>
-        <input type='submit' id="moveSubmit" value='Move' name='move'>
 
-            </div>
-            <label>Selected photos<br>
-                <input type="text" name="selected_photos" id="selectedPhotosHidden">
-            </label>
-        </form>
-        <!-- End Edit Photo Options -->
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
         <div class = "content container-fluid" id = "content">
+
+            <!-- Edit Photos Options -->
+            <form id="editForm" action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
+                <div id = "editOptions">
+                    <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
+
+                    <div class = "form-group">
+                        <label>New Category:<br>
+                            <input type="text" name="category" id = "category">
+                        </label>
+                    </div>
+                    <div class = "form-group">
+                        <label>
+                            Choose Category: <br />
+                            <select name="categoryDropDown" id = "categorySelector">
+                                <option value="null">Select An Option</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class = "form-group">
+                        <label>New Album:<br>
+                            <input type="text" name="albumName" id = "albumName">
+                        </label>
+                    </div>
+                    <div class = "form-group">
+                        <label>
+                            Choose Album: <br />
+                            <select name="albumNameDropDown" id = "albumSelector">
+                                <option value="null">Select An Option</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <input type='submit' id="deleteSubmit" value='Delete' name='delete'>
+                    <input type='submit' id="moveSubmit" value='Move' name='move'>
+
+                </div>
+                <input type="hidden" name="selected_photos" id="selectedPhotosHidden">
+                <input type="hidden" name="current_albumID" id="currentAlbumIDHidden">
+                <input type="hidden" name="current_albumName" id="currentAlbumNameHidden">
+            </form>
+            <!-- End Edit Photo Options -->
 
         </div>
     </body>

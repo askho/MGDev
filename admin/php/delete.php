@@ -40,7 +40,8 @@ function deleteCategory($categoryID){
     echo "<br><br>Deleted category from database, closing connection";
     
     mysqli_close($conn);
-    
+    header("location:../edit_categories.php");
+
 }
 
 function deleteAlbum($albumID){
@@ -69,6 +70,8 @@ function deleteAlbum($albumID){
     
     echo "<br><br>Deleted album from database, closing connection";
     mysqli_close($conn);
+    header("location:../editAlbums.php?categoryID=".$parentCategoryID);
+
 }
 
 function deletePhotos($photoArray){
