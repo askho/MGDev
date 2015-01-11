@@ -152,38 +152,55 @@ echo "<script>$(document).ready(function() {
 
             <!-- Edit Photos Options -->
             <form id="editForm" action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
-                <div id = "editOptions">
-                    <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
+                <div id = "editOptions">                    
+                    <table>
+                        <tr>
+                            <td>
+                                <div class = "form-group">
+                                <label>New Category:<br>
+                                    <input type="text" name="category" id = "category">
+                                </label>
+                                </div>
+                                <div class = "form-group">
+                                    <label>
+                                        Choose Category: <br />
+                                        <select name="categoryDropDown" id = "categorySelector">
+                                            <option value="null">Select An Option</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </td> 
+                            <td>
+                                <div class = "form-group">
+                                    <label>New Album:<br>
+                                        <input type="text" name="albumName" id = "albumName">
+                                    </label>
+                                </div>
+                                <div class = "form-group">
+                                    <label>
+                                        Choose Album: <br />
+                                        <select name="albumNameDropDown" id = "albumSelector">
+                                            <option value="null">Select An Option</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
 
-                    <div class = "form-group">
-                        <label>New Category:<br>
-                            <input type="text" name="category" id = "category">
-                        </label>
-                    </div>
-                    <div class = "form-group">
-                        <label>
-                            Choose Category: <br />
-                            <select name="categoryDropDown" id = "categorySelector">
-                                <option value="null">Select An Option</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div class = "form-group">
-                        <label>New Album:<br>
-                            <input type="text" name="albumName" id = "albumName">
-                        </label>
-                    </div>
-                    <div class = "form-group">
-                        <label>
-                            Choose Album: <br />
-                            <select name="albumNameDropDown" id = "albumSelector">
-                                <option value="null">Select An Option</option>
-                            </select>
-                        </label>
-                    </div>
-
-                    <input type='submit' id="deleteSubmit" value='Delete' name='delete'>
-                    <input type='submit' id="moveSubmit" value='Move' name='move'>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type='submit' id="deleteSubmit" value='Delete' name='delete'>
+                                <input type='submit' id="moveSubmit" value='Move' name='move'>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                
 
                 </div>
                 <input type="hidden" name="selected_photos" id="selectedPhotosHidden">
