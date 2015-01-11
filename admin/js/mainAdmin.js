@@ -143,7 +143,7 @@ function showPictures(data, albumName, albumID, page) {
     if(data == ""){ 
         alert("No albums found");
     }
-    for(i = startFrom; i < loadTo; i++) {
+    for(i = 0; i < data.length; i++) {
         var thumbnail = "../images/thumbnails/"+data[i].location;
         var photoName = data[i].photoName;
         var photoID = data[i].photoID;
