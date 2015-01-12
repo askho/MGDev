@@ -43,6 +43,9 @@
                 $("#currentAlbumIDHidden").val(getUrlParameter('albumID'));
                 $("#currentAlbumNameHidden").val(getUrlParameter('albumName'));
 
+                $("#deleteSubmit").attr('disabled','disabled');
+                $("#moveSubmit").attr('disabled','disabled');
+                
                 $("#deleteSubmit").click(function(){choice = "DELETE";});
                 $("#moveSubmit").click(function(){choice = "MOVE";});
 
@@ -57,9 +60,13 @@
                         $('#selectedPhotosHidden').val(JSON.stringify(selectedPhotos));
                         if (selecting){
                             $("#confirmSelectionBtn").text("Unconfirm");
+                            $("#deleteSubmit").removeAttr('disabled');
+                            $("#moveSubmit").removeAttr('disabled');
                             selecting = false;
                         } else {
                             $("#confirmSelectionBtn").text("Confirm Selection");
+                            $("#deleteSubmit").attr('disabled','disabled');
+                            $("#moveSubmit").attr('disabled','disabled');
                             selecting = true;
                         } 
                     } 
@@ -152,8 +159,17 @@ echo "<script>$(document).ready(function() {
 
             <!-- Edit Photos Options -->
             <form id="editForm" action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
-                <div id = "editOptions">                    
+                <div id = "editOptions">  
+                    <h1>Move or delete selected photos</h1>
                     <table>
+                        <tr>
+                            <td>
+                                <h3>Destination Category</h3>
+                            </td>
+                            <td>
+                                <h3>Destination Album</h3>
+                            </td>
+                        </tr>
                         <tr>
                             <td>
                                 <div class = "form-group">
@@ -187,13 +203,8 @@ echo "<script>$(document).ready(function() {
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <input type='submit' id="deleteSubmit" value='Delete' name='delete'>
                                 <input type='submit' id="moveSubmit" value='Move' name='move'>
                             </td>
