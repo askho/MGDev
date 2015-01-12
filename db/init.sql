@@ -16,7 +16,7 @@ CREATE TABLE Photo (
 	,ISO VARCHAR(15) NULL
 	,focalLength INT NULL
 	,camera VARCHAR(50) NULL
-	,description BLOB NULL
+	,description TEXT NULL
 	,location VARCHAR(100) NULL
 	,originalFileName VARCHAR(100) NULL
 	,CONSTRAINT pk_photoID PRIMARY KEY (photoID)
