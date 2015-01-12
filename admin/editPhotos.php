@@ -10,10 +10,10 @@
         <script src="js/mainAdmin.js"></script>
 
         <!-- datepicker -->
-        <link rel="stylesheet" href="../css/datepicker3.css">
-        <script src="../js/bootstrap-datepicker.js"></script>
-        <script>$.fn.datepicker.defaults.format = "yyyy-mm-dd";</script>
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
         <!-- end datepickker -->
+
 
         <script>
             /*
