@@ -155,23 +155,80 @@ function showPictures(data, albumName, albumID, page) {
         }
         $("#isotopeContainer").append(" <figure class = 'isotopeElement'>\
 <form action='php/edit_photos.php' method='post' enctype='multipart/form-data'>\
-<input type='text' name='new_name'>\
-<input type='submit' value='Rename' name='rename'>\
+<input type='text' name='new_name' value='' id='newName"+photoID+"'>\
+<input type='button' value='Change Name' id='editName"+photoID+"'>\
 <input type='hidden' name='photoID' value='"+photoID+"'>\
 <input type='hidden' name='albumID' value='"+albumID+"'>\
 <input type='hidden' name='albumName' value='"+albumName+"'>\
-<br><input type='text' name='new_description'>\
-<input type='submit' value='changeDesc' name='changeDesc'>\
+<br><input type='text' name='newDesc' id='newDesc"+photoID+"'>\
+<input type='button' value='Change Description' id='editDesc"+photoID+"'>\
 <br><label>DateTaken:<br>\
-                                      <input name='date_taken' class='datepicker'></label>\
+<input data-provide='datepicker' id='newDate"+photoID+"'>\
+<input type='button' value='Change Date' id='editDate"+photoID+"'>\
+                                      </label>\
 </form>\
 <a id = '"+photoID+"'href = ''>\
 <img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
-<figcaption>"+photoName+"</figcaption>\
+<figcaption id='caption"+photoID+"'>"+photoName+"</figcaption>\
 </a>\
 </figure>");
         (function(j, object) {
             var selected = false;
+            
+            $("#editDate"+j).click(function(){
+                $.ajax({
+                    url: "./php/editDate.php",
+                    dataType: "text",
+                    type: "POST",
+                    data:{photoID: j, date: $("#newDate"+j).val()}
+                }).done(function(data){
+                    if(data !== "success"){
+                        alert("Failed to update date");
+                    } else {
+                        alert("Changed date successfully");
+                    }
+                }).fail(function(data){
+                    console.log(data);
+                    alert("Failed to update date");
+                });
+            });
+            
+            $("#editName"+j).click(function(){
+                $.ajax({
+                    url: "./php/renamePhoto.php",
+                    dataType: "text",
+                    type: "POST",
+                    data:{photoID: j, name: $("#newName"+j).val()}
+                }).done(function(data){
+                    if(data === "success"){
+                        $("#caption"+j).html($("#newName"+j).val());
+                    } else {
+                        alert("Failed to update name");
+                    }
+                }).fail(function(data){
+                    console.log(data);
+                    alert("Failed to update name");
+                });
+            });
+            
+            $("#editDesc"+j).click(function(){
+                $.ajax({
+                    url: "./php/editDescription.php",
+                    dataType: "text",
+                    type: "POST",
+                    data:{photoID: j, desc: $("#newDesc"+j).val()}
+                }).done(function(data){
+                    if(data !== "success"){
+                        alert("Failed to update desription");
+                    } else {
+                        alert("Changed description successfully");
+                    }
+                }).fail(function(data){
+                    console.log(data);
+                    alert("Failed to update description");
+                });
+            });
+            
             $("#"+j).click(function(event) {
                 /*var image = "images/photos/"+object.location;
                 var caption = "<div class = 'caption'>Date Taken: " + object.dateTaken 
@@ -191,12 +248,12 @@ function showPictures(data, albumName, albumID, page) {
                         }
                         selected = false;
                     }
-                } else {
                 }
                 event.preventDefault();
             });
         })(photoID, data[i])
     }
+    
     /*
     var maxPage = 5 + currentPage;
     var maxPossiblePages = data.length / 14;
@@ -218,9 +275,6 @@ function showPictures(data, albumName, albumID, page) {
     }
     */
     $("#content").fadeIn("fast",function() {initIsotope()});
-    $(".datepicker").each(function(){
-        $(this).datepicker();
-    });
 }
 /*
     This grabs the categories to be shown with a form for editing options.
