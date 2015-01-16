@@ -117,6 +117,9 @@ function loadPictures(albumID, albumName, pageNumber) {
     });
 }
 function showPictures(data, albumName, albumID, page) {
+    $("#editForm").append(
+        "<input type='hidden' name='albumID' value='"+albumID+"'>\
+<input type='hidden' name='albumName' value='"+albumName+"'>");
     $("#content").append("<h1>"+albumName+"</hi>");
     $("#content").append("<div id ='isotopeContainer'></div>");
     $("#content").append("<nav><ul id = 'pageNavigation' class = 'pagination'></ul?</nav>");

@@ -1,3 +1,7 @@
+<?php
+require './php/logged_in.php'; 
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -35,9 +39,9 @@
                 $( "#categorySelector" ).change(function() {
                     $("#category").val("");
                 });
-                /*$("#reset").click(function() {
+                $("#reset").click(function() {
         initUploadScreen();
-    })*/
+    });
                 initUploadScreen();
                 // 
                 $("#currentAlbumIDHidden").val(getUrlParameter('albumID'));
@@ -45,31 +49,38 @@
 
                 $("#deleteSubmit").attr('disabled','disabled');
                 $("#moveSubmit").attr('disabled','disabled');
-                
+
                 $("#deleteSubmit").click(function(){choice = "DELETE";});
                 $("#moveSubmit").click(function(){choice = "MOVE";});
 
                 $('#editForm').submit(function() {
+                    if (choice === "MOVE"){
+                        alert();
+                    }
+                    return false;
                     return confirm(choice + " all selected photos?");
                 });
 
                 $("#editOptions").click(function(event){
                     if($(event.target).is("#confirmSelectionBtn")) {
-
-                        // store selected photos in hidden field
-                        $('#selectedPhotosHidden').val(JSON.stringify(selectedPhotos));
-                        if (selecting){
-                            $("#confirmSelectionBtn").text("Unconfirm");
-                            $("#deleteSubmit").removeAttr('disabled');
-                            $("#moveSubmit").removeAttr('disabled');
-                            selecting = false;
+                        if(selectedPhotos.length == 0){
+                            alert("Please select photos");
                         } else {
-                            $("#confirmSelectionBtn").text("Confirm Selection");
-                            $("#deleteSubmit").attr('disabled','disabled');
-                            $("#moveSubmit").attr('disabled','disabled');
-                            selecting = true;
+                            // store selected photos in hidden field
+                            $('#selectedPhotosHidden').val(JSON.stringify(selectedPhotos));
+                            if (selecting){
+                                $("#confirmSelectionBtn").text("Unconfirm");
+                                $("#deleteSubmit").removeAttr('disabled');
+                                $("#moveSubmit").removeAttr('disabled');
+                                selecting = false;
+                            } else {
+                                $("#confirmSelectionBtn").text("Confirm Selection");
+                                $("#deleteSubmit").attr('disabled','disabled');
+                                $("#moveSubmit").attr('disabled','disabled');
+                                selecting = true;
+                            } 
                         } 
-                    } 
+                    }
                 });
             });
             var choice = "";
@@ -173,9 +184,9 @@ echo "<script>$(document).ready(function() {
                         <tr>
                             <td>
                                 <div class = "form-group">
-                                <label>New Category:<br>
-                                    <input type="text" name="category" id = "category">
-                                </label>
+                                    <label>New Category:<br>
+                                        <input type="text" name="category" id = "category">
+                                    </label>
                                 </div>
                                 <div class = "form-group">
                                     <label>
@@ -204,14 +215,20 @@ echo "<script>$(document).ready(function() {
                         </tr>
                         <tr>
                             <td colspan="2">
+                                <button class="btn btn-info" type = "button" id = "reset">Reset Form</button>
+
+                            </td>
+</tr>
+                        <tr>
+                            <td colspan="2">
                                 <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
                                 <input type='submit' id="deleteSubmit" value='Delete' name='delete'>
                                 <input type='submit' id="moveSubmit" value='Move' name='move'>
                             </td>
                         </tr>
                     </table>
-                    
-                
+
+
 
                 </div>
                 <input type="hidden" name="selected_photos" id="selectedPhotosHidden">

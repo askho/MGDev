@@ -20,6 +20,7 @@ if (isset($_POST['albumNameDropDown'])){
 
 if(isset($_POST["delete"])){
     echo deletePhotos($photos);
+    header("location:../editPhotos.php?albumID=".$_POST['albumID']."&albumName=".$_POST['albumName']);
 } if (isset($_POST["move"])){
     echo movePhotos($photos, $categoryName, $albumName);
 } else if (isset($_POST['rename'])){

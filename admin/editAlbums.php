@@ -1,3 +1,7 @@
+<?php 
+require './php/logged_in.php'; 
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
