@@ -12,7 +12,7 @@
 	$output = array();
 	$sql = "SELECT albumID, albumName FROM album NATURAL JOIN albumCategory NATURAL JOIN category";
 	if(isset($_POST['categoryName'])) {
-		$categoryName = $_POST['category'];
+		$categoryName = $_POST['categoryName'];
 		$sql = $sql." WHERE categoryName = '$categoryName'";
 	}
 	$result = mysqli_query($conn, $sql);

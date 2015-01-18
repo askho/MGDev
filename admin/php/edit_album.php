@@ -3,7 +3,9 @@ print_r($_POST);
 
 if(isset($_POST['delete'])){
     require 'delete.php';
+    echo 
     deleteAlbum($_POST['albumID']);
+    header("location:../editAlbums.php?categoryID=".$_POST['parent_categoryID']);
 } else if(isset($_POST['create_album'])){
     require 'create.php';
     echo createAlbum($_POST['new_album'],$_POST['parent_categoryID']);

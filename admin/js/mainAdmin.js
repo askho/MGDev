@@ -33,7 +33,7 @@ function getQueryVariable(variable)
     @param: categoryID This is the category that we are selecting
 */
 function getAlbumThumbs(categoryID, categoryName) {
-    console.log("calling album thumbs");
+    console.log(categoryName);
     $.ajax({
         url: "./php/viewAlbum.php",
         dataType: "json",
@@ -69,6 +69,7 @@ function getAlbumThumbs(categoryID, categoryName) {
 <form action='php/edit_album.php' method='post' id='deleteForm"+albumID+"' enctype='multipart/form-data'>\
 <input type='submit' value='Delete' name='delete'>\
 <input type='hidden' name='albumID' value='"+albumID+"'>\
+<input type='text' name='parent_categoryID' value='"+categoryID+"'>\
 </form>");
             (function(albumID2, albumName2, href) {
                 $("#"+albumID2).click(function(event) {
@@ -311,7 +312,7 @@ function getCategories() {
 </form>").fadeIn("fast");
                 (function(j) {
                     $("#"+data[j]['categoryID']).click(function(event) {
-                        getAlbumThumbs(data[j]['categoryID'],data[i]['categoryName']);
+                        getAlbumThumbs(data[j]['categoryID'],data[j]['categoryName']);
                         var href = $(this).attr('href');
                         if(history.pushState) {
                             history.pushState(null, null, href)
@@ -320,7 +321,7 @@ function getCategories() {
                     });
                     $("#deleteForm"+data[j]['categoryID']).submit(function(){
                         return confirm("Delete this category and all its albums and photos?");
-                    });               
+                    });
                 })(i)
             }
         }
