@@ -287,8 +287,8 @@ function getCategories() {
 <h1>Edit Categories</h1>\
 </div>");
         $("#editCategories").append("<form action='php/edit_category.php' method='post' id='createCategoryForm' enctype='multipart/form-data'>\
-<input type='text' name='new_category' maxlength='250' required>\
-<input type='submit' value='Create New Category' name='create_category'>\
+<input type='text' name='new_category' placeholder='New Category' class='form-control' maxlength='250' required>\
+<input type='submit' class='btn btn-success' value='Create New Category' name='create_category'>\
 </form>");
         if(data == ""){
             alert("No categories found");
@@ -297,15 +297,15 @@ function getCategories() {
                 var catID = data[i]['categoryID'];
                 var url = "editAlbums.php?categoryID="+catID;
                 $("#editCategories").hide().append("<h3>"+data[i]['categoryName']+"</h3>\
-<form action='php/edit_category.php' method='post' id='deleteForm"+catID+"' enctype='multipart/form-data'>\
-<input type='submit' value='Delete' name='delete'>\
-<input type='hidden' name='categoryID' value='"+catID+"'>\
-<a href = '"+url+"' id ='"+catID+"'>view</a></form>\
 <form action='php/edit_category.php' method='post' id='renameForm"+catID+"' enctype='multipart/form-data'>\
-<input type='text' name='new_name' maxlength='250'>\
-<input type='submit' value='Rename' name='rename'>\
+<input type='text' name='new_name' placeholder='New Name' class='form-control' maxlength='250'>\
+<input type='submit' value='Update' class='btn btn-success' name='rename'>\
 <input type='hidden' name='original_category_name' value='"+data[i]['categoryName']+"'>\
-</form>").fadeIn("fast");
+</form>\
+<form action='php/edit_category.php' method='post' id='deleteForm"+catID+"' enctype='multipart/form-data'>\
+<input type='submit' class='btn btn-danger' value='Delete' name='delete'>\
+<input type='hidden' name='categoryID' value='"+catID+"'>\
+<a href = '"+url+"' id ='"+catID+"' class='btn btn-info'>View Albums</a></form>").fadeIn("fast");
                 (function(j) {
                     $("#"+data[j]['categoryID']).click(function(event) {
                         getAlbumThumbs(data[j]['categoryID'],data[j]['categoryName']);

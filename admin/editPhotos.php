@@ -79,7 +79,7 @@ require './php/logged_in.php';
                                 $("#moveSubmit").attr('disabled','disabled');
                                 selecting = true;
                             } 
-                            $("#deleteSubmit").toggleClass('btn-success');
+                            $("#deleteSubmit").toggleClass('btn-danger');
                             $("#moveSubmit").toggleClass('btn-success');
                             $("#confirmSelectionBtn").toggleClass('btn-primary');
                             $("#confirmSelectionBtn").toggleClass('btn-info');
@@ -189,7 +189,7 @@ echo "<script>$(document).ready(function() {
                             </td>
                         </tr>
                             <td colspan="2">
-                                <button class="btn btn-info" type = "button" id = "reset">Reset Form</button>
+                                <button class="btn btn-info" type = "button" id = "reset">Reset Destination</button>
                                 <button type="button" class="btn btn-info" id="confirmSelectionBtn">Confirm Selection</button>
                                 <input type='submit' id="deleteSubmit" class="btn" value='Delete' name='delete'>
                                 <input type='submit' id="moveSubmit" class="btn" value='Move' name='move'>
