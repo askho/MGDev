@@ -162,9 +162,9 @@ echo "<script>$(document).ready(function() {
         <div class = "content container-fluid" id = "content">
 
             <!-- Edit Photos Options -->
-            <form id="editForm" action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
+            <h1>Move or delete selected photos</h1>
+            <form id="editForm" class='well' action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
                 <div id = "editOptions">  
-                    <h1>Move or delete selected photos</h1>
                     <table>
                         <tr>
                             <td>

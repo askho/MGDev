@@ -41,9 +41,9 @@ function getAlbumThumbs(categoryID, categoryName) {
         data:{categoryName: categoryName}
     })
     .done(function( data ) {
-        $("#content").html("<h1>Albums</hi>");
+        $("#content").html("<h1>Albums</h1>");
         $("#content").append("<div id ='isotopeContainer'></div>");
-        $("#isotopeContainer").append("<form action='php/edit_album.php' method='post' id='createAlbumForm' enctype='multipart/form-data'>\
+        $("#isotopeContainer").append("<form class='well' action='php/edit_album.php' method='post' id='createAlbumForm' enctype='multipart/form-data'>\
 <input type='text' placeholder='New Album' class='form-control' name='new_album' required maxlength='250'>\
 <input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\
 <input type='submit' value='Create' class='btn btn-success' name='create_album'>\
@@ -57,7 +57,7 @@ function getAlbumThumbs(categoryID, categoryName) {
             var albumName = data[i].albumName;
             var albumID = data[i].albumID;
             var url = "editPhotos.php?albumID="+albumID+"&albumName="+albumName;
-            $("#isotopeContainer").append("<form action='php/edit_album.php' method='post' id='renameForm"+albumID+"' enctype='multipart/form-data'>\
+            $("#isotopeContainer").append("<div class='well'><form action='php/edit_album.php' method='post' id='renameForm"+albumID+"' enctype='multipart/form-data'>\
                                           <h3>"+ albumName +"</h3>\
 <input type='text' name='new_name' placeholder='New Name' class='form-control' maxlength='250'>\
 <input type='hidden' name='original_album_name' value='"+albumName+"'>\
@@ -69,7 +69,7 @@ function getAlbumThumbs(categoryID, categoryName) {
 <input type='submit' value='Delete' class='btn btn-danger' name='delete'>\
 <input type='hidden' name='albumID' value='"+albumID+"'>\
 <input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\                                          <a href = '"+url+"' class='btn btn-info' >View Photos</a>\
-</form>");
+</form></div>");
             (function(albumID2, albumName2, href) {
                 $("#"+albumID2).click(function(event) {
                     loadPictures(albumID2, albumName2);
@@ -154,6 +154,7 @@ function showPictures(data, albumName, albumID, page) {
             photoName = "";
         }
         $("#isotopeContainer").append("<figure class = 'isotopeElement'>\
+<div class='well'>\
 <form action='php/edit_photos.php' method='post' enctype='multipart/form-data'>\
 <input type='text' placeholder='Photo Name' class='form-control' name='new_name' maxlength='250' value='' id='newName"+photoID+"'>\
 <input type='button' class='btn btn-success' value='Update' id='editName"+photoID+"'>\
@@ -165,6 +166,7 @@ function showPictures(data, albumName, albumID, page) {
 <input data-provide='datepicker' class='form-control' placeholder='Choose Date Taken'  id='newDate"+photoID+"'>\
 <input type='button' class='btn btn-success' value='Update' id='editDate"+photoID+"'>\
 </form>\
+</div>\
 <a id = '"+photoID+"'href = ''>\
 <img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
 <figcaption id='caption"+photoID+"'>"+photoName+"</figcaption>\
@@ -286,9 +288,9 @@ function getCategories() {
         $("#content").html("<div id = 'editCategories'>\
 <h1>Edit Categories</h1>\
 </div>");
-        $("#editCategories").append("<form action='php/edit_category.php' method='post' id='createCategoryForm' enctype='multipart/form-data'>\
+        $("#editCategories").append("<form class='well' action='php/edit_category.php' method='post' id='createCategoryForm' enctype='multipart/form-data'>\
 <input type='text' name='new_category' placeholder='New Category' class='form-control' maxlength='250' required>\
-<input type='submit' class='btn btn-success' value='Create New Category' name='create_category'>\
+<input type='submit' class='btn btn-success' value='Create' name='create_category'>\
 </form>");
         if(data == ""){
             alert("No categories found");
@@ -296,7 +298,7 @@ function getCategories() {
             for(i = 0; i < data.length; i++) {
                 var catID = data[i]['categoryID'];
                 var url = "editAlbums.php?categoryID="+catID;
-                $("#editCategories").hide().append("<h3>"+data[i]['categoryName']+"</h3>\
+                $("#editCategories").hide().append("<div class='well'><h3>"+data[i]['categoryName']+"</h3>\
 <form action='php/edit_category.php' method='post' id='renameForm"+catID+"' enctype='multipart/form-data'>\
 <input type='text' name='new_name' placeholder='New Name' class='form-control' maxlength='250'>\
 <input type='submit' value='Update' class='btn btn-success' name='rename'>\
@@ -305,7 +307,7 @@ function getCategories() {
 <form action='php/edit_category.php' method='post' id='deleteForm"+catID+"' enctype='multipart/form-data'>\
 <input type='submit' class='btn btn-danger' value='Delete' name='delete'>\
 <input type='hidden' name='categoryID' value='"+catID+"'>\
-<a href = '"+url+"' id ='"+catID+"' class='btn btn-info'>View Albums</a></form>").fadeIn("fast");
+<a href = '"+url+"' id ='"+catID+"' class='btn btn-info'>View Albums</a></form></div>").fadeIn("fast");
                 (function(j) {
                     $("#"+data[j]['categoryID']).click(function(event) {
                         getAlbumThumbs(data[j]['categoryID'],data[j]['categoryName']);
