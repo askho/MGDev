@@ -154,19 +154,17 @@ function showPictures(data, albumName, albumID, page) {
         if(photoName == null) {
             photoName = "";
         }
-        $("#isotopeContainer").append(" <figure class = 'isotopeElement'>\
+        $("#isotopeContainer").append("<figure class = 'isotopeElement'>\
 <form action='php/edit_photos.php' method='post' enctype='multipart/form-data'>\
-<input type='text' name='new_name' maxlength='250' value='' id='newName"+photoID+"'>\
-<input type='button' value='Change Name' id='editName"+photoID+"'>\
+<input type='text'  class='form-control' name='new_name' maxlength='250' value='' id='newName"+photoID+"'>\
+<input type='button' class='btn btn-success' value='Update Name' id='editName"+photoID+"'>\
 <input type='hidden' name='photoID' value='"+photoID+"'>\
 <input type='hidden' name='albumID' value='"+albumID+"'>\
 <input type='hidden' name='albumName' value='"+albumName+"'>\
-<br><input type='text' name='newDesc' id='newDesc"+photoID+"'>\
-<input type='button' value='Change Description' id='editDesc"+photoID+"'>\
-<br><label>DateTaken:<br>\
-<input data-provide='datepicker' id='newDate"+photoID+"'>\
-<input type='button' value='Change Date' id='editDate"+photoID+"'>\
-                                      </label>\
+<br><input type='text' class='form-control' name='newDesc' id='newDesc"+photoID+"'>\
+<input type='button' class='btn btn-success' value='Update Description' id='editDesc"+photoID+"'>\
+<input data-provide='datepicker' class='form-control' value='click to pick date' id='newDate"+photoID+"'>\
+<input type='button' class='btn btn-success' value='Update Date Taken' id='editDate"+photoID+"'>\
 </form>\
 <a id = '"+photoID+"'href = ''>\
 <img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
@@ -299,15 +297,15 @@ function getCategories() {
             for(i = 0; i < data.length; i++) {
                 var catID = data[i]['categoryID'];
                 var url = "editAlbums.php?categoryID="+catID;
-                $("#editCategories").hide().append("<br><form action='php/edit_category.php' method='post' id='deleteForm"+catID+"' enctype='multipart/form-data'>\
+                $("#editCategories").hide().append("<h3>"+data[i]['categoryName']+"</h3>\
+<form action='php/edit_category.php' method='post' id='deleteForm"+catID+"' enctype='multipart/form-data'>\
 <input type='submit' value='Delete' name='delete'>\
 <input type='hidden' name='categoryID' value='"+catID+"'>\
-</form><form action='php/edit_category.php' method='post' id='renameForm"+catID+"' enctype='multipart/form-data'>\
-<h3>"+data[i]['categoryName']+"</h3>\
+<a href = '"+url+"' id ='"+catID+"'>view</a></form>\
+<form action='php/edit_category.php' method='post' id='renameForm"+catID+"' enctype='multipart/form-data'>\
 <input type='text' name='new_name' maxlength='250'>\
 <input type='submit' value='Rename' name='rename'>\
 <input type='hidden' name='original_category_name' value='"+data[i]['categoryName']+"'>\
-<a href = '"+url+"' id ='"+catID+"'>view</a>\
 </form>").fadeIn("fast");
                 (function(j) {
                     $("#"+data[j]['categoryID']).click(function(event) {

@@ -64,7 +64,7 @@ require './php/logged_in.php';
                 $("#editOptions").click(function(event){
                     if($(event.target).is("#confirmSelectionBtn")) {
                         if(selectedPhotos.length == 0){
-                            alert("Please select photos");
+                            alert("Please select photos. Click on images to select");
                         } else {
                             // store selected photos in hidden field
                             $('#selectedPhotosHidden').val(JSON.stringify(selectedPhotos));
@@ -79,6 +79,10 @@ require './php/logged_in.php';
                                 $("#moveSubmit").attr('disabled','disabled');
                                 selecting = true;
                             } 
+                            $("#deleteSubmit").toggleClass('btn-success');
+                            $("#moveSubmit").toggleClass('btn-success');
+                            $("#confirmSelectionBtn").toggleClass('btn-primary');
+                            $("#confirmSelectionBtn").toggleClass('btn-info');
                         } 
                     }
                 });
@@ -155,17 +159,6 @@ echo "<script>$(document).ready(function() {
             </div>
         </nav>    
 
-
-
-
-
-
-
-
-
-
-
-
         <div class = "content container-fluid" id = "content">
 
             <!-- Edit Photos Options -->
@@ -175,18 +168,10 @@ echo "<script>$(document).ready(function() {
                     <table>
                         <tr>
                             <td>
-                                <h3>Destination Category</h3>
-                            </td>
-                            <td>
-                                <h3>Destination Album</h3>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <div class = "form-group">
                                     <label>
-                                        Choose Category: <br />
-                                        <select name="categoryDropDown" id = "categorySelector">
+                                        Destination Category: <br />
+                                        <select name="categoryDropDown" class='form-control' id = "categorySelector">
                                             <option value="null">Select An Option</option>
                                         </select>
                                     </label>
@@ -195,30 +180,22 @@ echo "<script>$(document).ready(function() {
                             <td>
                                 <div class = "form-group">
                                     <label>
-                                        Choose Album: <br />
-                                        <select name="albumNameDropDown" id = "albumSelector">
+                                        Destination Album: <br />
+                                        <select name="albumNameDropDown" class='form-control'  id = "albumSelector">
                                             <option value="null">Select An Option</option>
                                         </select>
                                     </label>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
                             <td colspan="2">
                                 <button class="btn btn-info" type = "button" id = "reset">Reset Form</button>
-
-                            </td>
-</tr>
-                        <tr>
-                            <td colspan="2">
-                                <button type="button" id="confirmSelectionBtn">Confirm Selection</button>
-                                <input type='submit' id="deleteSubmit" value='Delete' name='delete'>
-                                <input type='submit' id="moveSubmit" value='Move' name='move'>
+                                <button type="button" class="btn btn-info" id="confirmSelectionBtn">Confirm Selection</button>
+                                <input type='submit' id="deleteSubmit" class="btn" value='Delete' name='delete'>
+                                <input type='submit' id="moveSubmit" class="btn" value='Move' name='move'>
                             </td>
                         </tr>
                     </table>
-
-
 
                 </div>
                 <input type="hidden" name="selected_photos" id="selectedPhotosHidden">
