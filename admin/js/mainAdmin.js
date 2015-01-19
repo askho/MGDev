@@ -44,9 +44,9 @@ function getAlbumThumbs(categoryID, categoryName) {
         $("#content").html("<h1>Albums</hi>");
         $("#content").append("<div id ='isotopeContainer'></div>");
         $("#isotopeContainer").append("<form action='php/edit_album.php' method='post' id='createAlbumForm' enctype='multipart/form-data'>\
-<input type='text' name='new_album' required maxlength='250'>\
+<input type='text' placeholder='New Album' class='form-control' name='new_album' required maxlength='250'>\
 <input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\
-<input type='submit' value='Create New Album' name='create_album'>\
+<input type='submit' value='Create' class='btn btn-success' name='create_album'>\
 </form>");
         $("#content").hide();
         if(data == ""){
@@ -59,17 +59,16 @@ function getAlbumThumbs(categoryID, categoryName) {
             var url = "editPhotos.php?albumID="+albumID+"&albumName="+albumName;
             $("#isotopeContainer").append("<form action='php/edit_album.php' method='post' id='renameForm"+albumID+"' enctype='multipart/form-data'>\
                                           <h3>"+ albumName +"</h3>\
-<input type='text' name='new_name' maxlength='250'>\
+<input type='text' name='new_name' placeholder='New Name' class='form-control' maxlength='250'>\
 <input type='hidden' name='original_album_name' value='"+albumName+"'>\
 <input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\
 <input type='hidden' name='albumID' value='"+albumID+"'>\
-                                          <input type='submit' value='Rename' name='rename'>\
-                                          <a href = '"+url+"''>view</a>\
+<input type='submit' class='btn btn-success' value='update' name='rename'>\
 </form>\
 <form action='php/edit_album.php' method='post' id='deleteForm"+albumID+"' enctype='multipart/form-data'>\
-<input type='submit' value='Delete' name='delete'>\
+<input type='submit' value='Delete' class='btn btn-danger' name='delete'>\
 <input type='hidden' name='albumID' value='"+albumID+"'>\
-<input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\
+<input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\                                          <a href = '"+url+"' class='btn btn-info' >View Photos</a>\
 </form>");
             (function(albumID2, albumName2, href) {
                 $("#"+albumID2).click(function(event) {
@@ -156,15 +155,15 @@ function showPictures(data, albumName, albumID, page) {
         }
         $("#isotopeContainer").append("<figure class = 'isotopeElement'>\
 <form action='php/edit_photos.php' method='post' enctype='multipart/form-data'>\
-<input type='text'  class='form-control' name='new_name' maxlength='250' value='' id='newName"+photoID+"'>\
-<input type='button' class='btn btn-success' value='Update Name' id='editName"+photoID+"'>\
+<input type='text' placeholder='Photo Name' class='form-control' name='new_name' maxlength='250' value='' id='newName"+photoID+"'>\
+<input type='button' class='btn btn-success' value='Update' id='editName"+photoID+"'>\
 <input type='hidden' name='photoID' value='"+photoID+"'>\
 <input type='hidden' name='albumID' value='"+albumID+"'>\
 <input type='hidden' name='albumName' value='"+albumName+"'>\
-<br><input type='text' class='form-control' name='newDesc' id='newDesc"+photoID+"'>\
-<input type='button' class='btn btn-success' value='Update Description' id='editDesc"+photoID+"'>\
-<input data-provide='datepicker' class='form-control' value='click to pick date' id='newDate"+photoID+"'>\
-<input type='button' class='btn btn-success' value='Update Date Taken' id='editDate"+photoID+"'>\
+<br><input type='text' placeholder='Description' class='form-control' name='newDesc' id='newDesc"+photoID+"'>\
+<input type='button' class='btn btn-success' value='Update' id='editDesc"+photoID+"'>\
+<input data-provide='datepicker' class='form-control' placeholder='Choose Date Taken'  id='newDate"+photoID+"'>\
+<input type='button' class='btn btn-success' value='Update' id='editDate"+photoID+"'>\
 </form>\
 <a id = '"+photoID+"'href = ''>\
 <img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
