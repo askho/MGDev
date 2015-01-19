@@ -56,14 +56,6 @@ require './php/logged_in.php';
 
 
 </div>
-<div id = "bottomRight">
-<address>
-  <strong>Mike Gonzales</strong><br />
-  (604) 111-1111<br />
-  <a href = "mailto:#">Mikegonzales@mail.com</a><br />
-</address>
-</div>
-
 </body>
 
 </html>
