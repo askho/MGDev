@@ -54,10 +54,10 @@ require './php/logged_in.php';
                 $("#moveSubmit").click(function(){choice = "MOVE";});
 
                 $('#editForm').submit(function() {
-                    if (choice === "MOVE"){
+                    /*if (choice === "MOVE"){
                         alert();
                     }
-                    return false;
+                    return false;*/
                     return confirm(choice + " all selected photos?");
                 });
 
