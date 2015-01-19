@@ -1,5 +1,5 @@
 <?php
-print_r($_POST);
+//print_r($_POST);
 
 if(isset($_POST['delete'])){
     require 'delete.php';
@@ -15,8 +15,15 @@ if(isset($_POST['delete'])){
 
 function renameAlbum($originalName,$newName,$albumID,$parentCategoryID){
     require '../../php/connection.php';
-    echo "<h4>".$originalName.$newName.$parentCategoryID;
+    //echo "<h4>".$originalName.$newName.$parentCategoryID;
 
+    if (isNullOrEmpty($newName)){
+        return "<h4><script> 
+            window.alert('new album name not entered');
+        window.location.replace(\"../editAlbums.php?categoryID=".$parentCategoryID."\");
+        </script>";
+    }
+    
     // check if category exists
     $sql = "SELECT albumID FROM Album NATURAL JOIN AlbumCategory 
         WHERE albumName = ? AND categoryID = ?";
@@ -48,4 +55,11 @@ function renameAlbum($originalName,$newName,$albumID,$parentCategoryID){
     header("location:../editAlbums.php?categoryID=".$parentCategoryID);
     
 }
+
+function isNullOrEmpty($str){
+    if (trim($str)==='' || empty($str) || $str == "null"){
+        return 1;
+    }
+}
+
 ?>

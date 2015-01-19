@@ -1,5 +1,5 @@
 <?php
-//print_r($_POST);
+print_r($_POST);
 
 require 'delete.php';
 
@@ -12,11 +12,11 @@ if (isset($_POST['categoryDropDown'])){
 } else {
     $categoryName = $_POST['category'];
 }
-if (isset($_POST['albumNameDropDown'])){
-    $albumName = $_POST['albumNameDropDown'];
-} else {
+if (isset($_POST['albumName'])) {
     $albumName = $_POST['albumName'];
-} 
+} else {
+    $albumName = $_POST['albumNameDropDown'];
+}
 
 if(isset($_POST["delete"])){
     echo deletePhotos($photos);
@@ -41,8 +41,7 @@ function movePhotos($photos, $category, $album){
     require 'create.php';
 
     //echo "<h3>move photos selected";
-    //echo "<h4>destination: ".$category." ".$album;    
-    //echo "<h4>photos: ";
+
 
     // check that category a album are not empty or null
    if(isNullOrEmpty($category) || isNullOrEmpty($album)){
@@ -58,6 +57,9 @@ function movePhotos($photos, $category, $album){
             echo $photos[$i];
         }
 
+       echo "<h4>destination: ".$category." ".$album;    
+       //echo "<h4>photos: ";
+       
         // create category if it doesnt exist
         $categoryID = createCategory($category);
         $albumID = createAlbum($album, $categoryID);

@@ -69,7 +69,7 @@ function getAlbumThumbs(categoryID, categoryName) {
 <form action='php/edit_album.php' method='post' id='deleteForm"+albumID+"' enctype='multipart/form-data'>\
 <input type='submit' value='Delete' name='delete'>\
 <input type='hidden' name='albumID' value='"+albumID+"'>\
-<input type='text' name='parent_categoryID' value='"+categoryID+"'>\
+<input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\
 </form>");
             (function(albumID2, albumName2, href) {
                 $("#"+albumID2).click(function(event) {
@@ -290,7 +290,7 @@ function getCategories() {
 <h1>Edit Categories</h1>\
 </div>");
         $("#editCategories").append("<form action='php/edit_category.php' method='post' id='createCategoryForm' enctype='multipart/form-data'>\
-<input type='text' name='new_category' required>\
+<input type='text' name='new_category' maxlength='250' required>\
 <input type='submit' value='Create New Category' name='create_category'>\
 </form>");
         if(data == ""){
