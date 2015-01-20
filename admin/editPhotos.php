@@ -107,10 +107,6 @@ require './php/logged_in.php';
         </script>
 
         <script src="js/initCategAlbumForm.js"></script>
-
-
-
-
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?php
@@ -151,9 +147,8 @@ echo "<script>$(document).ready(function() {
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a id = "gallery" href = "viewCategories.php">Gallery</a></li>
-                        <li><a id = "blog" href = "#">Blog</a></li>
-                        <li><a id = "booking" href = "#">Booking</a></li>
+                        <li><a id = "controlPanel" href = "control_panel.php">Control Panel</a></li>
+
                     </ul>
                 </div>
             </div>
@@ -162,8 +157,8 @@ echo "<script>$(document).ready(function() {
         <div class = "content container-fluid" id = "content">
 
             <!-- Edit Photos Options -->
-            <h1>Move or delete selected photos</h1>
             <form id="editForm" class='well' action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
+                <h1>Edit Photos</h1>
                 <div id = "editOptions">  
                     <table>
                         <tr>

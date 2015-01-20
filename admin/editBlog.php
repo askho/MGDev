@@ -40,10 +40,8 @@ require './php/logged_in.php';
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-        <li><a id = "gallery" href = "#">Gallery</a></li>
-        <li><a id = "blog" href = "#">Blog</a></li>
-        <li><a id = "booking" href = "#">Booking</a></li>
-      </ul>
+        <li><a id = "controlPanel" href = "control_panel.php">Control Panel</a></li>
+       </ul>
     </div>
   </div>
 </nav>
@@ -128,14 +126,6 @@ require './php/logged_in.php';
     </div>
   </div>
 </div>
-<div id = "bottomRight">
-<address>
-  <strong>Mike Gonzales</strong><br>
-  (604) 111-1111<br>
-  <a href = "mailto:#">Mikegonzales@mail.com</a><br>
-</address>
-</div>
-
 </body>
 
 </html>

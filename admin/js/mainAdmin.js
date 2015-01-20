@@ -41,9 +41,10 @@ function getAlbumThumbs(categoryID, categoryName) {
         data:{categoryName: categoryName}
     })
     .done(function( data ) {
-        $("#content").html("<h1>Albums</h1>");
+        $("#content").html("");
         $("#content").append("<div id ='isotopeContainer'></div>");
         $("#isotopeContainer").append("<form class='well' action='php/edit_album.php' method='post' id='createAlbumForm' enctype='multipart/form-data'>\
+<h1>Edit Albums</h1>\
 <input type='text' placeholder='New Album' class='form-control' name='new_album' required maxlength='250'>\
 <input type='hidden' name='parent_categoryID' value='"+categoryID+"'>\
 <input type='submit' value='Create' class='btn btn-success' name='create_album'>\
@@ -166,9 +167,9 @@ function showPictures(data, albumName, albumID, page) {
 <input data-provide='datepicker' class='form-control' placeholder='Choose Date Taken'  id='newDate"+photoID+"'>\
 <input type='button' class='btn btn-success' value='Update' id='editDate"+photoID+"'>\
 </form>\
-</div>\
 <a id = '"+photoID+"'href = ''>\
 <img class='photo' src='"+thumbnail+"' id='"+photoID+"Img'>\
+</div>\
 <figcaption id='caption"+photoID+"'>"+photoName+"</figcaption>\
 </a>\
 </figure>");
@@ -284,11 +285,11 @@ function getCategories() {
         url: "php/getCategories.php",
         dataType: "json"
     })
-    .done(function( data ) {        
-        $("#content").html("<div id = 'editCategories'>\
+    .done(function( data ) {  
+        $("#content").append("<form class='well' action='php/edit_category.php' method='post' id='createCategoryForm' enctype='multipart/form-data'>\
+<div id = 'editCategories'>\
 <h1>Edit Categories</h1>\
-</div>");
-        $("#editCategories").append("<form class='well' action='php/edit_category.php' method='post' id='createCategoryForm' enctype='multipart/form-data'>\
+</div>\
 <input type='text' name='new_category' placeholder='New Category' class='form-control' maxlength='250' required>\
 <input type='submit' class='btn btn-success' value='Create' name='create_category'>\
 </form>");
@@ -298,7 +299,7 @@ function getCategories() {
             for(i = 0; i < data.length; i++) {
                 var catID = data[i]['categoryID'];
                 var url = "editAlbums.php?categoryID="+catID;
-                $("#editCategories").hide().append("<div class='well'><h3>"+data[i]['categoryName']+"</h3>\
+                $("#content").hide().append("<div class='well'><h3>"+data[i]['categoryName']+"</h3>\
 <form action='php/edit_category.php' method='post' id='renameForm"+catID+"' enctype='multipart/form-data'>\
 <input type='text' name='new_name' placeholder='New Name' class='form-control' maxlength='250'>\
 <input type='submit' value='Update' class='btn btn-success' name='rename'>\

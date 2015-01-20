@@ -44,9 +44,7 @@ require './php/logged_in.php';
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-        <li><a id = "gallery" href = "viewCategories.php">Gallery</a></li>
-        <li><a id = "blog" href = "#">Blog</a></li>
-        <li><a id = "booking" href = "#">Booking</a></li>
+          <li><a id = "controlPanel" href = "control_panel.php">Control Panel</a></li>
       </ul>
     </div>
   </div>
