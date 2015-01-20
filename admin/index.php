@@ -5,6 +5,10 @@ if(isset($_SESSION['user'])){
 }
 ?>
 
+
+
+
+
 <!DOCTYPE html>
 <html>
     <head>
