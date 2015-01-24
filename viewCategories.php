@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
+    <title>Categories - Mike Gonzales Photography</title>
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/style.css">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -31,7 +31,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="index.html">
         <img class = "hidden-xs" src = "images/style/logo.png" alt = "logo"/>
         <img class = "visible-xs" src = "images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
 
@@ -40,9 +40,8 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-        <li><a id = "gallery" href = "viewCategories.php">Gallery</a></li>
-        <li><a id = "blog" href = "#">Blog</a></li>
-        <li><a id = "booking" href = "#">Booking</a></li>
+        <li><a id = "gallery" href = "./viewCategories.php">Gallery</a></li>
+        <li><a id = "blog" href = "./viewBlog.php">Blog</a></li>
       </ul>
     </div>
   </div>

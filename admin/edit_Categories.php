@@ -5,7 +5,7 @@ require './php/logged_in.php';
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit Categories</title>
+    <title>Manage Photos - Mike Gonzales Photography</title>
   <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/style.css">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -35,7 +35,7 @@ require './php/logged_in.php';
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="control_panel.php">
         <img class = "hidden-xs" src = "../images/style/logo.png" alt = "logo"/>
           <img class = "visible-xs" src = "../images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
 

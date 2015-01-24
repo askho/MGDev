@@ -4,6 +4,7 @@ Initalizing handlers
 $( document ).ready(function() {
     $(".nav.navbar-nav.navbar-right").click(function(event){
         if($(event.target).is("#gallery")) {
+            $(document).prop('title', 'Gallery - Mike Gonzales Photography');
             history.pushState(null, null, "viewCategories.php")
             event.preventDefault();
             getCategories();
@@ -204,7 +205,7 @@ function getAlbumThumbs(categoryID) {
         $("#content").append("<div id ='isotopeContainer'></div>");
         $("#isotopeContainer").hide();
         if(data == ""){
-            alert("No albums found");
+            $("#isotopeContainer").append("No albums found");
         }
         for(i = 0; i < data.length; i++) {
             var result = "images/thumbnails/"+data[i].FirstPhoto;
@@ -318,7 +319,7 @@ function showPictures(data, albumName, albumID, page) {
         }
     }
     if(data == ""){ 
-        alert("No albums found");
+        $("#isotopeContainer").append("No pictures found");
     }
     for(i = startFrom; i < loadTo; i++) {
         var thumbnail = "images/thumbnails/"+data[i].location;
@@ -336,12 +337,14 @@ function showPictures(data, albumName, albumID, page) {
         (function(j, object) {
             $("#"+j).click(function(event) {
                 dateTaken = (object.dateTaken == null)?  "Unknown": object.dateTaken;
+                description = (object.description == null)?  "": "<br />" + object.description;
                 iso = (object.ISO == null)? "Unknown" : object.ISO;
                 camera = (object.camera == null)? "Unknown" : object.camera;
                 focalLength = (object.focalLength == null)? "Unknown" : object.focalLength + " mm";
                 aperture = (object.aperture == null)? "Unknown" : object.aperture;
                 var image = "images/photos/"+object.location;
                 var caption = "<div class = 'caption'>Date Taken: " + dateTaken 
+                    + description
                     + "<br />ISO: " + iso 
                     + "<br />Camera: " + camera
                     + "<br />Focal Length: " + focalLength
@@ -402,7 +405,7 @@ function showPrivatePhotos(data, albumName, albumID, page, private) {
         }
     }
     if(data == ""){ 
-        alert("No albums found");
+        $("#isotopeContainer").append("No albums found");
     }
     for(i = startFrom; i < loadTo; i++) {
         var thumbnail = "images/thumbnails/"+data[i].location;
@@ -467,7 +470,7 @@ function getCategories() {
     })
     .done(function( data ) {
         if(data == ""){
-            alert("No categories found");
+            $("#content").html("No categories found");
         } else {
             $("#content").html("<div id = 'categories'><h1>Categories</hi></div>");
             for(i = 0; i < data.length; i++) {

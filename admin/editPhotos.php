@@ -5,7 +5,7 @@ require './php/logged_in.php';
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Edit Photos</title>
+        <title>Manage Photos - Mike Gonzales Photography</title>
         <link rel="stylesheet" href="../css/bootstrap.css">
         <link rel="stylesheet" href="../css/style.css">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -40,8 +40,8 @@ require './php/logged_in.php';
                     $("#category").val("");
                 });
                 $("#reset").click(function() {
-        initUploadScreen();
-    });
+                    initUploadScreen();
+                });
                 initUploadScreen();
                 // 
                 $("#currentAlbumIDHidden").val(getUrlParameter('albumID'));
@@ -138,7 +138,7 @@ echo "<script>$(document).ready(function() {
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="control_panel.php">
                         <img class = "hidden-xs" src = "../images/style/logo.png" alt = "logo"/>
                         <img class = "visible-xs" src = "../images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
 
@@ -160,38 +160,26 @@ echo "<script>$(document).ready(function() {
             <form id="editForm" class='well' action="php/edit_photos.php" method="post" enctype= "multipart/form-data">
                 <h1>Edit Photos</h1>
                 <div id = "editOptions">  
-                    <table>
-                        <tr>
-                            <td>
-                                <div class = "form-group">
-                                    <label>
-                                        Destination Category: <br />
-                                        <select name="categoryDropDown" class='form-control' id = "categorySelector">
-                                            <option value="null">Select An Option</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </td> 
-                            <td>
-                                <div class = "form-group">
-                                    <label>
-                                        Destination Album: <br />
-                                        <select name="albumNameDropDown" class='form-control'  id = "albumSelector">
-                                            <option value="null">Select An Option</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </td>
-                        </tr>
-                            <td colspan="2">
-                                <button class="btn btn-info" type = "button" id = "reset">Reset Destination</button>
-                                <button type="button" class="btn btn-info" id="confirmSelectionBtn">Confirm Selection</button>
-                                <input type='submit' id="deleteSubmit" class="btn" value='Delete' name='delete'>
-                                <input type='submit' id="moveSubmit" class="btn" value='Move' name='move'>
-                            </td>
-                        </tr>
-                    </table>
-
+                    <div class = "form-group">
+                        <label>
+                            Destination Category: <br />
+                            <select name="categoryDropDown" class='form-control' id = "categorySelector">
+                                <option value="null">Select An Option</option>
+                            </select>
+                        </label>
+                        <label>
+                            Destination Album: <br />
+                            <select name="albumNameDropDown" class='form-control'  id = "albumSelector">
+                                <option value="null">Select An Option</option>
+                            </select>
+                        </label>
+                    </div>
+                    <label><button class="btn btn-info" type = "button" id = "reset">Reset Destination</button></label>
+                    <label><button type="button" class="btn btn-info" id="confirmSelectionBtn">Confirm Selection</button></label>
+                    <label>
+                    <label><input type='submit' id="deleteSubmit" class="btn" value='Delete' name='delete'></label>
+                    <label><input type='submit' id="moveSubmit" class="btn" value='Move' name='move'></label>
+                    </label>
                 </div>
                 <input type="hidden" name="selected_photos" id="selectedPhotosHidden">
                 <input type="hidden" name="current_albumID" id="currentAlbumIDHidden">

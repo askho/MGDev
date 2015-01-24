@@ -5,7 +5,7 @@ require './php/logged_in.php';
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit Albums</title>
+    <title>Manage Photos - Mike Gonzales Photography</title>
   <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/style.css">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -16,7 +16,7 @@ require './php/logged_in.php';
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <?php
   /**
-    Calling the corresponding JS functino to build the page. 
+    Calling the corresponding JS function to build the page. 
   */
   $categoryID = $_GET['categoryID'];
   echo "<script>$(document).ready(function() {
@@ -36,7 +36,7 @@ require './php/logged_in.php';
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="control_panel.php">
         <img class = "hidden-xs" src = "../images/style/logo.png" alt = "logo"/>
         <img class = "visible-xs" src = "../images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
 
@@ -45,9 +45,7 @@ require './php/logged_in.php';
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-        <li><a id = "gallery" href = "viewCategories.php">Gallery</a></li>
-        <li><a id = "blog" href = "#">Blog</a></li>
-        <li><a id = "booking" href = "#">Booking</a></li>
+        <li><a id = "gallery" href = "control_panel.php">Control Panel</a></li>
       </ul>
     </div>
   </div>

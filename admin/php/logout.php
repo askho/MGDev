@@ -1,14 +1,5 @@
 <?php 
 session_start();
 session_destroy();
+header("location:../index.php");
 ?>
-
-<html>
-    <head>
-    </head>
-    <body>
-        Logged out
-        <br>
-        <a href="../index.php">login</a>
-    </body>
-</html>

@@ -4,11 +4,12 @@ require './php/logged_in.php';
 
 <html>
     <head>
-        <title>Edit Categories</title>
+        <title>Control Panel - Mike Gonzales Photography</title>
         <link rel="stylesheet" href="../css/bootstrap.css">
         <link rel="stylesheet" href="../css/style.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
+        <script src="js/mainAdmin.js"></script>
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
@@ -23,7 +24,7 @@ require './php/logged_in.php';
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="control_panel.php">
                         <img class = "hidden-xs" src = "../images/style/logo.png" alt = "logo"/>
                         <img class = "visible-xs" src = "../images/style/logo.png" alt = "logo" width = "auto" height = "50"/>
 
@@ -32,10 +33,8 @@ require './php/logged_in.php';
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a id = "gallery" href = "../viewCategories.php">Gallery</a></li>
-                        <li><a id = "blog" href = "../viewBlog.php">Blog</a></li>
-                        <li>            <a class="btn" href="php/logout.php">Logout</a>
-                        </li>
+                        <li><a class="btn" href="../viewCategories.php">Main Site</a></li>
+                        <li><a class="btn" href="php/logout.php">Logout</a></li>
                     </ul>
                 </div>
             </div>

@@ -1,10 +1,8 @@
 <?php
-//displayPostData();
 
 if(isset($_SESSION['user'])){
     header("location:../control_panel.php");
 }
-
 
 // set up database connection
 ob_start();
@@ -34,7 +32,10 @@ function login() {
 
     // check that fields aren't empty
     if(empty($user) || empty($pass)){
-        return "<br>Please enter your username and password and try again"; 
+        return "<script> 
+        window.alert('Please enter your username and password');
+        window.location.replace(\"../index.php\");
+        </script>"; 
     }
 
     // Query database - sql injection protected
@@ -63,7 +64,10 @@ function login() {
     }
 
     // user and hash-pass combination not found
-    return "<br>Wrong username/password, please try again."; 
+    return "<script> 
+        window.alert('Incorrect username or password');
+        window.location.replace(\"../index.php\");
+        </script>"; 
 }
 
 function checkDBConnection($connection){
@@ -74,19 +78,4 @@ function checkDBConnection($connection){
     }
     ob_end_flush();
 }
-
-// displays form data received as post
-function displayPostData(){
-    echo "Login info received";
-    echo "<br>Username: " . $_POST["user"]; 
-    echo "<br>Password: " . $_POST["password"]; 
-
-}
-
 ?>
-<html>
-    <body>
-        <br>
-        <a href="../index.php">Back to login</a>
-    </body>
-</html>
